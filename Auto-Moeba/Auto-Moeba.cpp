@@ -108,14 +108,14 @@ void Simulation::init_buttons(int window_width, int window_height)
 	const auto& particle_registry = Particle::get_registry();
 	const int particle_type_count = (int)particle_registry.size();
 
-	const int button_width_total = (window_width - _button_spacing) / particle_type_count;
-	const int button_width = button_width_total - _button_spacing;
-	const int button_height = window_height / 20;
+	const float button_width_total = ((float)window_width - _button_spacing) / particle_type_count;
+	const float button_width = (float)button_width_total - _button_spacing;
+	const float button_height = window_height / 20.0f;
 	
-	const int button_pos_y = window_height - button_height;
+	const float button_pos_y = window_height - button_height;
 	for (int i = 0; i < particle_type_count; ++i)
 	{
-		const int button_pos_x = _button_spacing + (button_width_total * i);
+		const float button_pos_x = _button_spacing + (button_width_total * i);
 		Rectangle bounds = { button_pos_x, button_pos_y, button_width, button_height };
 		particle_buttons.push_back(Button(i, bounds, particle_registry[i].type_name,
 			_button_font_size, _button_font_color, _button_base_color, _button_hover_color,

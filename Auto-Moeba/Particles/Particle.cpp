@@ -1,4 +1,5 @@
 #include "Particle.h"
+#include "Sticker.h"
 
 const vector<shared_ptr<Particle>> Particle::check_collisions(const vector<shared_ptr<Particle>>& particles)
 {
@@ -7,6 +8,11 @@ const vector<shared_ptr<Particle>> Particle::check_collisions(const vector<share
 	for (const auto& particle : particles)
 	{
 		if (particle.get() == this) continue;
+
+		if (Sticker* sticker = dynamic_cast<Sticker*>(particle.get()))
+		{
+			if (sticker->get_stuck_to().get() == this) continue;
+		}
 
 		float dist = Utilities::dist(particle->get_position(), _next_position);
 

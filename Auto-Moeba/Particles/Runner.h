@@ -20,7 +20,11 @@ public:
 	void collide() override {}
 
 private:
-	static inline constexpr float _speed = 200.0f;
+	static inline constexpr float _speed = 400.0f;
+	static inline constexpr float _min_detect_range = 400.0f;
+	static inline constexpr float _run_range = 1000.0f;
+
+	bool _running = false;
 
 	static inline RegisterParticle<Runner> reg{ "Runner" };
 
