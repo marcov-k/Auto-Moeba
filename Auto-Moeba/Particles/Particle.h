@@ -7,16 +7,23 @@
 #include <memory>
 #include <string>
 #include <typeinfo>
+#include <unordered_map>
 #include <vector>
 
 #include "raylib.h"
 #include "../Utilities.h"
+#include "TypeAttractions.h"
+#include "../ParticleHandler.h"
 
 using namespace std;
 
 class Particle : public enable_shared_from_this<Particle>
 {
 public:
+	static inline constexpr float _effect_radius = 2000.0f;
+	static inline constexpr float _attraction_scale = 10.0f;
+	static inline constexpr float _max_attraction = numeric_limits<float>::max();
+
 	Particle() {}
 
 	Particle(const Vector2& start_position) : _position(start_position), _next_position(start_position) {}
@@ -46,49 +53,42 @@ public:
 
 	virtual const Color get_color() const = 0;
 
+	bool is_type(ParticleType type) const;
+
+	const unordered_map<ParticleType, float>& get_attractions()
+	{
+		if (_attractions.empty()) generate_type_attractions();
+		return _attractions;
+	}
+
 	void step(const vector<shared_ptr<Particle>>& particles)
 	{
 		generate_next_position(particles);
-		_collisions = check_collisions(particles);
 	}
 
-	const vector<shared_ptr<Particle>> check_collisions(const vector<shared_ptr<Particle>>& particles);
-
-	virtual void collide() = 0;
+	void check_collisions(const vector<shared_ptr<Particle>>& particles);
 
 	void update_position()
 	{
 		_position = _next_position;
 	}
 
-	void add_ignore_collision(shared_ptr<Particle> particle)
-	{
-		_ignore_collisions.push_back(particle);
-	}
-
-	void remove_ignore_collision(Particle* particle);
-
-	void add_ignore_target(shared_ptr<Particle> particle)
-	{
-		_ignore_targets.push_back(particle);
-	}
-
-	void remove_ignore_target(Particle* particle);
-
 protected:
 	Vector2 _position = { 0.0f, 0.0f };
 	Vector2 _next_position = { 0.0f, 0.0f };
-	vector<shared_ptr<Particle>> _collisions;
 
-	vector<shared_ptr<Particle>> _ignore_collisions;
-	vector<shared_ptr<Particle>> _ignore_targets;
+	virtual vector<ParticleType> get_types() const = 0;
 
-	bool ignore_collision(Particle* particle);
+	virtual void collide(const vector<shared_ptr<Particle>>& collisions) = 0;
 
-	bool ignore_target(Particle* particle);
+	virtual float scale_attraction(float attraction, const shared_ptr<const Particle>& other, const RelativePosition& rel_pos) const = 0;
 
 private:
-	virtual void generate_next_position(const vector<shared_ptr<Particle>>& particles) = 0;
+	unordered_map<ParticleType, float> _attractions;
+
+	void generate_type_attractions();
+
+	void generate_next_position(const vector<shared_ptr<Particle>>& particles);
 };
 
 template <typename T>

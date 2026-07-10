@@ -12,7 +12,6 @@ int main()
 	Simulation::render_loop(width, height);
 }
 
-vector<shared_ptr<Particle>> Simulation::particles;
 vector<Button> Simulation::particle_buttons;
 int Simulation::selected_particle = 0;
 bool Simulation::paused = true;
@@ -68,7 +67,7 @@ void Simulation::render_loop(int window_width, int window_height)
 		ClearBackground(BLACK);
 		
 		BeginMode2D(camera);
-		for (auto& particle : particles)
+		for (auto& particle : ParticleHandler::particles)
 		{
 			const Vector2& position = particle->get_position();
 			DrawCircle((int)round(position.x), (int)round(position.y), particle->get_size(), particle->get_color());
@@ -83,22 +82,30 @@ void Simulation::render_loop(int window_width, int window_height)
 		if (!paused)
 		{
 			// Can be made parallel
-			for (auto& particle : particles)
+			for (auto& particle : ParticleHandler::particles)
 			{
-				particle->step(particles);
-			}
-
-			// Must be kept sequential
-			for (auto& particle : particles)
-			{
-				particle->collide();
+				particle->step(ParticleHandler::particles);
 			}
 
 			// Can be made parallel
-			for (auto& particle : particles)
+			for (auto& particle : ParticleHandler::particles)
 			{
 				particle->update_position();
 			}
+
+			// Can be made parallel
+			for (auto& particle : ParticleHandler::particles)
+			{
+				particle->check_collisions(ParticleHandler::particles);
+			}
+
+			// Can be made parallel
+			for (auto& particle : ParticleHandler::particles)
+			{
+				particle->update_position();
+			}
+
+			ParticleHandler::finalize_removes();
 		}
 	}
 }
@@ -159,5 +166,5 @@ void Simulation::spawn_particle(Camera2D& camera)
 	Vector2 spawn_pos = GetScreenToWorld2D(GetMousePosition(), camera);
 	auto& factory = Particle::get_registry()[selected_particle].create;
 
-	particles.push_back(factory(spawn_pos));
+	ParticleHandler::add_particle(factory(spawn_pos));
 }

@@ -7,6 +7,7 @@
 
 #include "Particles.h"
 #include "Button.h"
+#include "ParticleHandler.h"
 
 using namespace std;
 
@@ -28,7 +29,6 @@ struct Simulation
 	static inline constexpr Color _button_press_color = BROWN;
 	static inline constexpr int _button_spacing = 25;
 
-	static vector<shared_ptr<Particle>> particles;
 	static vector<Button> particle_buttons;
 	static int selected_particle;
 	static bool paused;

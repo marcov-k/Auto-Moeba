@@ -1,15 +1,16 @@
 #include "Particle.h"
-#include "Sticker.h"
 
-const vector<shared_ptr<Particle>> Particle::check_collisions(const vector<shared_ptr<Particle>>& particles)
+void Particle::check_collisions(const vector<shared_ptr<Particle>>& particles)
 {
 	vector<shared_ptr<Particle>> collisions;
 
+	Vector2 adjusted_pos = _position;
+
 	for (const auto& particle : particles)
 	{
-		if (ignore_collision(particle.get())) continue;
+		if (particle.get() == this) continue;
 
-		auto rel_pos = Utilities::relative_position(particle->get_position(), _next_position);
+		auto rel_pos = Utilities::relative_position(particle->get_position(), _position);
 
 		float min_dist = particle->get_size() + get_size();
 		if (rel_pos.dist <= min_dist)
@@ -17,59 +18,76 @@ const vector<shared_ptr<Particle>> Particle::check_collisions(const vector<share
 			collisions.push_back(particle);
 
 			float correction = min_dist - rel_pos.dist;
-			float corr_x = correction * cos(rel_pos.angle);
-			float corr_y = correction * sin(rel_pos.angle);
+			auto dir = Utilities::unit_vector(rel_pos.offset);
+			auto corr_vec = Utilities::project_vector(correction, dir);
 
-			_next_position.x -= corr_x;
-			_next_position.y -= corr_y;
+			adjusted_pos.x -= corr_vec.x;
+			adjusted_pos.y -= corr_vec.y;
 		}
 	}
+	_next_position = adjusted_pos;
 
-	return collisions;
+	collide(collisions);
 }
 
-void Particle::remove_ignore_collision(Particle* particle)
+void Particle::generate_next_position(const vector<shared_ptr<Particle>>& particles)
 {
-	for (size_t i = 0; i < _ignore_collisions.size(); ++i)
+	Vector2 attraction{ 0.0f, 0.0f };
+
+	for (auto& particle : particles)
 	{
-		if (_ignore_collisions[i].get() == particle)
+		if (particle.get() == this) continue;
+
+		const auto& attractions = particle->get_attractions();
+
+		auto rel_pos = Utilities::relative_position(particle->get_position(), _position);
+
+		if (rel_pos.dist < _effect_radius)
 		{
-			_ignore_collisions.erase(_ignore_collisions.begin() + i);
-			break;
+			float attract = 0.0f;
+			for (auto type : particle->get_types())
+			{
+				attract += attractions.at(type);
+			}
+
+			attract = scale_attraction(attract, particle, rel_pos);
+			auto scale_vec = Utilities::project_vector(1.0f / rel_pos.dist, rel_pos.offset);
+			auto attract_vec = Utilities::project_vector(attract * _attraction_scale, scale_vec);
+			attraction.x += attract_vec.x;
+			attraction.y += attract_vec.y;
 		}
 	}
+
+	auto dir = Utilities::unit_vector(attraction);
+	float attract_mag = Utilities::vector_magnitude(attraction);
+	attract_mag = min(attract_mag, _max_attraction);
+
+	auto move = Utilities::project_vector(attract_mag, dir);
+
+	_next_position.x = _position.x + move.x * GetFrameTime();
+	_next_position.y = _position.y + move.y * GetFrameTime();
 }
 
-void Particle::remove_ignore_target(Particle* particle)
+bool Particle::is_type(ParticleType type) const
 {
-	for (size_t i = 0; i < _ignore_targets.size(); ++i)
+	auto types = get_types();
+	for (size_t i = 0; i < types.size(); ++i)
 	{
-		if (_ignore_targets[i].get() == particle)
-		{
-			_ignore_targets.erase(_ignore_targets.begin() + i);
-			break;
-		}
-	}
-}
-
-bool Particle::ignore_collision(Particle* particle)
-{
-	if (particle == this) return true;
-
-	for (auto& collision : _ignore_collisions)
-	{
-		if (collision.get() == particle) return true;
+		if (types[i] == type) return true;
 	}
 	return false;
 }
 
-bool Particle::ignore_target(Particle* particle)
+void Particle::generate_type_attractions()
 {
-	if (particle == this) return true;
-
-	for (auto& target : _ignore_targets)
+	for (auto type : get_types())
 	{
-		if (target.get() == particle) return true;
+		auto atts = TypeAttractions::get_attractions(type);
+
+		for (int i = 0; i < static_cast<int>(ParticleType::End); ++i)
+		{
+			auto add_type = static_cast<ParticleType>(i);
+			_attractions[add_type] += atts[add_type];
+		}
 	}
-	return false;
 }
