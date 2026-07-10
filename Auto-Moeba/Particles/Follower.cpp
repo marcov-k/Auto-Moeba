@@ -10,33 +10,31 @@ void Follower::generate_next_position(const vector<shared_ptr<Particle>>& partic
 		shared_ptr<Particle> closest = nullptr;
 		for (auto& particle : particles)
 		{
-			float dist = Utilities::dist(particle->get_position(), _position);
+			auto rel_pos = Utilities::relative_position(particle->get_position(), _position);
 			bool follower = typeid(*particle.get()) == typeid(Follower);
-			if (!follower && dist < _follow_range && dist < closest_dist)
+			if (!follower && rel_pos.dist < _follow_range && rel_pos.dist < closest_dist)
 			{
-				closest_dist = dist;
+				closest_dist = rel_pos.dist;
 				closest = particle;
 			}
 		}
 		_target = closest;
+		_target->add_ignore_target(shared_from_this());
 	}
 	else
 	{
-		float x_dist = _target->get_position().x - _position.x;
-		float y_dist = _target->get_position().y - _position.y;
-		float dist = hypot(x_dist, y_dist);
-		float angle = atan2(y_dist, x_dist);
+		auto rel_pos = Utilities::relative_position(_target->get_position(), _position);
 
 		float move = _speed * GetFrameTime();
-		float move_x = move * cos(angle);
-		float move_y = move * sin(angle);
+		float move_x = move * cos(rel_pos.angle);
+		float move_y = move * sin(rel_pos.angle);
 
-		if (dist < _follow_dist - _eps)
+		if (rel_pos.dist < _follow_dist - _eps)
 		{
 			_next_position.x = _position.x - move_x;
 			_next_position.y = _position.y - move_y;
 		}
-		else if (dist > _follow_dist + _eps)
+		else if (rel_pos.dist > _follow_dist + _eps)
 		{
 			_next_position.x = _position.x + move_x;
 			_next_position.y = _position.y + move_y;

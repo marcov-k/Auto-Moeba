@@ -1,5 +1,6 @@
 ﻿#pragma once
 
+#include <cmath>
 #include <functional>
 #include <memory>
 #include <vector>
@@ -11,6 +12,8 @@ using namespace std;
 
 struct Simulation
 {
+	static inline constexpr int _target_fps = 120;
+
 	static inline constexpr float _zoom_speed = 0.05f;
 	static inline constexpr float _move_speed = 500.0f;
 

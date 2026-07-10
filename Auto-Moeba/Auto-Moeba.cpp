@@ -7,7 +7,7 @@ int main()
 	const int height = 900;
 
 	InitWindow(width, height, "Auto-Moeba");
-	SetTargetFPS(60);
+	SetTargetFPS(Simulation::_target_fps);
 
 	Simulation::render_loop(width, height);
 }
@@ -71,7 +71,7 @@ void Simulation::render_loop(int window_width, int window_height)
 		for (auto& particle : particles)
 		{
 			const Vector2& position = particle->get_position();
-			DrawCircle(position.x, position.y, particle->get_size(), particle->get_color());
+			DrawCircle((int)round(position.x), (int)round(position.y), particle->get_size(), particle->get_color());
 		}
 		EndMode2D();
 

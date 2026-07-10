@@ -9,9 +9,11 @@ void Sticker::collide()
 			if (collision.get() != _stuck_to.get())
 			{
 				_stuck_to = collision;
-				float x_dist = _position.x - _stuck_to->get_position().x;
-				float y_dist = _position.y - _stuck_to->get_position().y;
-				_stuck_offset = { x_dist, y_dist };
+				_stuck_to->add_ignore_collision(shared_from_this());
+				_stuck_to->add_ignore_target(shared_from_this());
+
+				auto rel_pos = Utilities::relative_position(_position, _stuck_to->get_position());
+				_stuck_offset = { rel_pos.x_dist, rel_pos.y_dist };
 				break;
 			}
 		}

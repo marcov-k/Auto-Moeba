@@ -1,8 +1,11 @@
 #include "Utilities.h"
 
-using namespace std;
-
-float Utilities::dist(const Vector2& a, const Vector2& b)
+RelativePosition Utilities::relative_position(const Vector2& a, const Vector2& b)
 {
-	return hypot(a.x - b.x, a.y - b.y);
+	float x_dist = a.x - b.x;
+	float y_dist = a.y - b.y;
+	float dist = hypot(x_dist, y_dist);
+	float angle = atan2(y_dist, x_dist);
+
+	return RelativePosition{ x_dist, y_dist, dist, angle };
 }

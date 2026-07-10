@@ -8,12 +8,13 @@ void Runner::generate_next_position(const vector<shared_ptr<Particle>>& particle
 	shared_ptr<Particle> closest = nullptr;
 	for (auto& particle : particles)
 	{
-		if (particle.get() == this || typeid(*particle.get()) == typeid(Runner)) continue;
+		if (ignore_target(particle.get())) continue;
 
-		float dist = Utilities::dist(particle->get_position(), _position);
-		if (dist < closest_dist && dist < (_running ? _run_range : _min_detect_range))
+		auto rel_pos = Utilities::relative_position(particle->get_position(), _position);
+
+		if (rel_pos.dist < closest_dist && rel_pos.dist < (_running ? _run_range : _min_detect_range))
 		{
-			closest_dist = dist;
+			closest_dist = rel_pos.dist;
 			closest = particle;
 		}
 	}
@@ -22,13 +23,11 @@ void Runner::generate_next_position(const vector<shared_ptr<Particle>>& particle
 	{
 		_running = true;
 
-		float x_dist = closest->get_position().x - _position.x;
-		float y_dist = closest->get_position().y - _position.y;
-		float angle = atan2(y_dist, x_dist);
+		auto rel_pos = Utilities::relative_position(closest->get_position(), _position);
 
 		float move = _speed * GetFrameTime();
-		float move_x = move * cos(angle);
-		float move_y = move * sin(angle);
+		float move_x = move * cos(rel_pos.angle);
+		float move_y = move * sin(rel_pos.angle);
 
 		_next_position.x = _position.x - move_x;
 		_next_position.y = _position.y - move_y;

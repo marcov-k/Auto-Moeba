@@ -14,7 +14,7 @@
 
 using namespace std;
 
-class Particle
+class Particle : public enable_shared_from_this<Particle>
 {
 public:
 	Particle() {}
@@ -61,10 +61,31 @@ public:
 		_position = _next_position;
 	}
 
+	void add_ignore_collision(shared_ptr<Particle> particle)
+	{
+		_ignore_collisions.push_back(particle);
+	}
+
+	void remove_ignore_collision(Particle* particle);
+
+	void add_ignore_target(shared_ptr<Particle> particle)
+	{
+		_ignore_targets.push_back(particle);
+	}
+
+	void remove_ignore_target(Particle* particle);
+
 protected:
 	Vector2 _position = { 0.0f, 0.0f };
 	Vector2 _next_position = { 0.0f, 0.0f };
 	vector<shared_ptr<Particle>> _collisions;
+
+	vector<shared_ptr<Particle>> _ignore_collisions;
+	vector<shared_ptr<Particle>> _ignore_targets;
+
+	bool ignore_collision(Particle* particle);
+
+	bool ignore_target(Particle* particle);
 
 private:
 	virtual void generate_next_position(const vector<shared_ptr<Particle>>& particles) = 0;
