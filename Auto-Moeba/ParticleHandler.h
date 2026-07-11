@@ -1,6 +1,7 @@
 #pragma once
 
 #include <memory>
+#include <unordered_set>
 #include <vector>
 
 using namespace std;
@@ -11,7 +12,7 @@ struct ParticleHandler
 {
 	static vector<shared_ptr<Particle>> particles;
 	static vector<shared_ptr<Particle>> added;
-	static vector<Particle*> removed;
+	static unordered_set<Particle*> removed;
 
 	ParticleHandler() = delete;
 

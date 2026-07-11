@@ -3,7 +3,7 @@
 
 vector<shared_ptr<Particle>> ParticleHandler::particles;
 vector<shared_ptr<Particle>> ParticleHandler::added;
-vector<Particle*> ParticleHandler::removed;
+unordered_set<Particle*> ParticleHandler::removed;
 
 void ParticleHandler::add_particle(shared_ptr<Particle> particle)
 {
@@ -12,7 +12,7 @@ void ParticleHandler::add_particle(shared_ptr<Particle> particle)
 
 void ParticleHandler::remove_particle(Particle* particle)
 {
-	removed.push_back(particle);
+	removed.insert(particle);
 }
 
 void ParticleHandler::finalize_adds()
