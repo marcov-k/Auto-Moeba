@@ -23,13 +23,3 @@ void Scavenger::collide(const vector<shared_ptr<Particle>>& collisions)
 		}
 	}
 }
-
-void Scavenger::step_specific(const vector<shared_ptr<Particle>>& particles)
-{
-
-}
-
-float Scavenger::scale_attraction(float attraction, const shared_ptr<const Particle>& other, const RelativePosition& rel_pos) const
-{
-	return attraction;
-}

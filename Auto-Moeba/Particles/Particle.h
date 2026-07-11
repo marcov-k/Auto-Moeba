@@ -87,7 +87,7 @@ protected:
 	static inline constexpr float _effect_radius = 2000.0f;
 	static inline constexpr float _attraction_scale = 1.0f;
 	static inline constexpr float _max_acceleration = numeric_limits<float>::max();
-	static inline constexpr float _acceleration_scale = 3.0f;
+	static inline constexpr float _acceleration_scale = 20.0f;
 	static inline constexpr float _velocity_decay = 0.9f;
 	static inline constexpr float _min_dist_threshold = 4.0f;
 
@@ -100,11 +100,14 @@ protected:
 
 	virtual vector<ParticleType> get_types() const = 0;
 
-	virtual void collide(const vector<shared_ptr<Particle>>& collisions) = 0;
+	virtual void collide(const vector<shared_ptr<Particle>>& collisions) {}
 
-	virtual void step_specific(const vector<shared_ptr<Particle>>& particles) = 0;
+	virtual void step_specific(const vector<shared_ptr<Particle>>& particles) {}
 
-	virtual float scale_attraction(float attraction, const shared_ptr<const Particle>& other, const RelativePosition& rel_pos) const = 0;
+	virtual float scale_attraction(float attraction, const shared_ptr<const Particle>& other, const RelativePosition& rel_pos) const
+	{
+		return attraction;
+	}
 
 private:
 	unordered_map<ParticleType, float> _attractions;

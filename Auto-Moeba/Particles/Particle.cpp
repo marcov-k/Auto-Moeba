@@ -65,8 +65,8 @@ void Particle::update_acceleration(const vector<shared_ptr<Particle>>& particles
 		}
 
 		attract = scale_attraction(attract, particle, rel_pos);
-		auto scale_vec = Utilities::project_vector(1.0f / rel_pos.dist, rel_pos.offset);
-		auto attract_vec = Utilities::project_vector(attract * _attraction_scale, scale_vec);
+		auto dir = Utilities::unit_vector(rel_pos.offset);
+		auto attract_vec = Utilities::project_vector(attract * _attraction_scale / (rel_pos.dist / 10.0f), dir);
 		_acceleration.x += attract_vec.x;
 		_acceleration.y += attract_vec.y;
 	}
