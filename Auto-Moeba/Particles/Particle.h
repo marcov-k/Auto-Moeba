@@ -5,6 +5,7 @@
 #include <iostream>
 #include <limits>
 #include <memory>
+#include <optional>
 #include <string>
 #include <typeinfo>
 #include <unordered_map>
@@ -24,7 +25,7 @@ public:
 	static inline constexpr float _attraction_scale = 1.0f;
 	static inline constexpr float _max_acceleration = numeric_limits<float>::max();
 	static inline constexpr float _acceleration_scale = 3.0f;
-	static inline constexpr float _velocity_decay = 0.35f;
+	static inline constexpr float _velocity_decay = 0.9f;
 
 	Particle() {}
 
@@ -55,6 +56,10 @@ public:
 
 	virtual const Color get_color() const = 0;
 
+	virtual float get_max_health() const = 0;
+
+	virtual float get_health_decay() const = 0;
+
 	bool is_type(ParticleType type) const;
 
 	const unordered_map<ParticleType, float>& get_attractions()
@@ -68,6 +73,8 @@ public:
 		update_acceleration(particles);
 		update_velocity();
 		update_next_position();
+		step_general();
+		step_specific(particles);
 	}
 
 	void check_collisions(const vector<shared_ptr<Particle>>& particles);
@@ -77,15 +84,24 @@ public:
 		_position = _next_position;
 	}
 
+	void kill()
+	{
+		_is_dead = true;
+	}
+
 protected:
 	Vector2 _position = { 0.0f, 0.0f };
 	Vector2 _next_position = { 0.0f, 0.0f };
 	Vector2 _velocity = { 0.0f, 0.0f };
 	Vector2 _acceleration = { 0.0f, 0.0f };
+	optional<float> _health;
+	bool _is_dead = false;
 
 	virtual vector<ParticleType> get_types() const = 0;
 
 	virtual void collide(const vector<shared_ptr<Particle>>& collisions) = 0;
+
+	virtual void step_specific(const vector<shared_ptr<Particle>>& particles) = 0;
 
 	virtual float scale_attraction(float attraction, const shared_ptr<const Particle>& other, const RelativePosition& rel_pos) const = 0;
 
@@ -99,6 +115,8 @@ private:
 	void update_velocity();
 
 	void update_next_position();
+
+	void step_general();
 };
 
 template <typename T>

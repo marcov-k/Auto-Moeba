@@ -1,7 +1,5 @@
 #include "Prey.h"
 
-int Prey::_current_food = 0;
-
 void Prey::collide(const vector<shared_ptr<Particle>>& collisions)
 {
 	for (auto& particle : collisions)
@@ -13,6 +11,8 @@ void Prey::collide(const vector<shared_ptr<Particle>>& collisions)
 		}
 		else if (particle->is_type(ParticleType::Food))
 		{
+			_health.value() = get_max_health();
+
 			_current_food++;
 			if (_current_food >= _food_to_reproduce)
 			{
@@ -21,6 +21,11 @@ void Prey::collide(const vector<shared_ptr<Particle>>& collisions)
 			}
 		}
 	}
+}
+
+void Prey::step_specific(const vector<shared_ptr<Particle>>& particles)
+{
+
 }
 
 float Prey::scale_attraction(float attraction, const shared_ptr<const Particle>& other, const RelativePosition& rel_pos) const

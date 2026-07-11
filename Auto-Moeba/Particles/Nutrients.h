@@ -2,35 +2,35 @@
 
 #include "Particle.h"
 
-class Prey : public Particle
+class Nutrients : public Particle
 {
 public:
 	using Particle::Particle;
 
 	float get_size() const override
 	{
-		return 15.0f;
+		return 10.0f;
 	}
 
 	const Color get_color() const override
 	{
-		return GREEN;
+		return DARKGREEN;
 	}
 
 	float get_max_health() const override
 	{
-		return 75.0f;
+		return 1.0f;
 	}
 
 	float get_health_decay() const override
 	{
-		return 2.0f;
+		return 0.0f;
 	}
 
 protected:
 	vector<ParticleType> get_types() const override
 	{
-		return { ParticleType::Prey };
+		return {};
 	}
 
 	void collide(const vector<shared_ptr<Particle>>& collisions) override;
@@ -40,9 +40,8 @@ protected:
 	float scale_attraction(float attraction, const shared_ptr<const Particle>& other, const RelativePosition& rel_pos) const override;
 
 private:
-	static inline constexpr float _group_dist = 60.0f;
-	static inline constexpr int _food_to_reproduce = 4;
-	int _current_food = 0;
+	static inline constexpr float _growth_time = 10.0f;
+	float _current_growth = 0.0f;
 
-	static inline RegisterParticle<Prey> reg{ "Prey" };
+	static inline RegisterParticle<Nutrients> reg{ "Nutrients" };
 };

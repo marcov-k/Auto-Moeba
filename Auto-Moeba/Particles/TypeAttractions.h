@@ -46,9 +46,27 @@ struct TypeAttractions
 			return food();
 		case ParticleType::Waste:
 			return waste();
+		case ParticleType::End:
+			return empty();
 		default:
 			throw invalid_argument("Unkown particle type.");
 		}
+	}
+
+	static unordered_map<ParticleType, float> empty()
+	{
+		return unordered_map<ParticleType, float>
+		{
+			{ ParticleType::Predator, 0.0f },
+			{ ParticleType::Prey, 0.0f },
+			{ ParticleType::Scavenger, 0.0f },
+			{ ParticleType::Membrane, 0.0f },
+			{ ParticleType::Nucleus, 0.0f },
+			{ ParticleType::Connector, 0.0f },
+			{ ParticleType::Anchor, 0.0f },
+			{ ParticleType::Food, 0.0f },
+			{ ParticleType::Waste, 0.0f }
+		};
 	}
 
 	static unordered_map<ParticleType, float> predator()

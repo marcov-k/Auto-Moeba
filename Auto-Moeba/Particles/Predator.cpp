@@ -1,14 +1,14 @@
 #include "Predator.h"
 #include "Waste.h"
 
-int Predator::_current_prey = 0;
-
 void Predator::collide(const vector<shared_ptr<Particle>>& collisions)
 {
 	for (auto& particle : collisions)
 	{
 		if (particle->is_type(ParticleType::Prey))
 		{
+			_health.value() = get_max_health();
+
 			auto rel_pos = Utilities::relative_position(particle->get_position(), _position);
 			auto reverse_pos = Utilities::project_vector(-1.0f, rel_pos.offset);
 			auto waste_pos = Utilities::add_vector(reverse_pos, _position);
@@ -22,6 +22,11 @@ void Predator::collide(const vector<shared_ptr<Particle>>& collisions)
 			}
 		}
 	}
+}
+
+void Predator::step_specific(const vector<shared_ptr<Particle>>& particles)
+{
+
 }
 
 float Predator::scale_attraction(float attraction, const shared_ptr<const Particle>& other, const RelativePosition& rel_pos) const

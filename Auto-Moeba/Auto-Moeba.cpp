@@ -80,34 +80,39 @@ void Simulation::render_loop(int window_width, int window_height)
 
 		if (!paused)
 		{
-			// Can be made parallel
-			for (auto& particle : ParticleHandler::particles)
-			{
-				particle->step(ParticleHandler::particles);
-			}
-
-			// Can be made parallel
-			for (auto& particle : ParticleHandler::particles)
-			{
-				particle->update_position();
-			}
-
-			// Can be made parallel
-			for (auto& particle : ParticleHandler::particles)
-			{
-				particle->check_collisions(ParticleHandler::particles);
-			}
-
-			// Can be made parallel
-			for (auto& particle : ParticleHandler::particles)
-			{
-				particle->update_position();
-			}
-
-			ParticleHandler::finalize_removes();
+			simulation_step();
 		}
 		ParticleHandler::finalize_adds();
 	}
+}
+
+void Simulation::simulation_step()
+{
+	// Can be made parallel
+	for (auto& particle : ParticleHandler::particles)
+	{
+		particle->step(ParticleHandler::particles);
+	}
+
+	// Can be made parallel
+	for (auto& particle : ParticleHandler::particles)
+	{
+		particle->update_position();
+	}
+
+	// Can be made parallel
+	for (auto& particle : ParticleHandler::particles)
+	{
+		particle->check_collisions(ParticleHandler::particles);
+	}
+
+	// Can be made parallel
+	for (auto& particle : ParticleHandler::particles)
+	{
+		particle->update_position();
+	}
+
+	ParticleHandler::finalize_removes();
 }
 
 void Simulation::init_buttons(int window_width, int window_height)

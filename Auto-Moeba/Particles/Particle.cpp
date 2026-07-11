@@ -1,14 +1,18 @@
 #include "Particle.h"
+#include "Waste.h"
+#include "Nutrients.h"
 
 void Particle::check_collisions(const vector<shared_ptr<Particle>>& particles)
 {
+	if (_is_dead) return;
+
 	vector<shared_ptr<Particle>> collisions;
 
 	Vector2 adjusted_pos = _position;
 
 	for (const auto& particle : particles)
 	{
-		if (particle.get() == this) continue;
+		if (particle.get() == this || particle->_is_dead) continue;
 
 		auto rel_pos = Utilities::relative_position(particle->get_position(), _position);
 
@@ -33,6 +37,8 @@ void Particle::check_collisions(const vector<shared_ptr<Particle>>& particles)
 void Particle::update_acceleration(const vector<shared_ptr<Particle>>& particles)
 {
 	_acceleration = { 0.0f, 0.0f };
+
+	if (_is_dead) return;
 
 	for (auto& particle : particles)
 	{
@@ -76,6 +82,26 @@ void Particle::update_next_position()
 	_next_position.y = _position.y + _velocity.y * GetFrameTime();
 }
 
+void Particle::step_general()
+{
+	if (!_health.has_value()) _health.emplace(get_max_health());
+
+	float& health = _health.value();
+	health -= get_health_decay() * GetFrameTime();
+	if (health <= 0.0f)
+	{
+		if (Utilities::generate_random() < 0.5f)
+		{
+			ParticleHandler::add_particle(make_shared<Waste>(_position));
+		}
+		else
+		{
+			ParticleHandler::add_particle(make_shared<Nutrients>(_position));
+		}
+		ParticleHandler::remove_particle(this);
+	}
+}
+
 bool Particle::is_type(ParticleType type) const
 {
 	auto types = get_types();
@@ -89,6 +115,11 @@ bool Particle::is_type(ParticleType type) const
 void Particle::generate_type_attractions()
 {
 	const int type_count = static_cast<int>(ParticleType::End);
+
+	if (get_types().size() < 1)
+	{
+		_attractions = TypeAttractions::get_attractions(ParticleType::End);
+	}
 
 	for (auto type : get_types())
 	{

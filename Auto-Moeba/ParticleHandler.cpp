@@ -1,4 +1,5 @@
 #include "ParticleHandler.h"
+#include "Particles/Particle.h"
 
 vector<shared_ptr<Particle>> ParticleHandler::particles;
 vector<shared_ptr<Particle>> ParticleHandler::added;
@@ -26,13 +27,16 @@ void ParticleHandler::finalize_adds()
 
 void ParticleHandler::finalize_removes()
 {
-	for (auto& particle : removed)
+	size_t removed_count = 0;
+	for (size_t i = 0; i < particles.size(); ++i)
 	{
-		for (size_t i = 0; i < particles.size(); ++i)
+		for (auto& particle : removed)
 		{
 			if (particles[i].get() == particle)
 			{
-				particles.erase(particles.begin() + i);
+				particle->kill();
+				particles.erase(particles.begin() + i - removed_count);
+				removed_count++;
 				break;
 			}
 		}

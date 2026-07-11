@@ -41,6 +41,8 @@ struct Simulation
 
 	static void render_loop(int window_width, int window_height);
 
+	static void simulation_step();
+
 	static void init_buttons(int window_width, int window_height);
 
 	static void render_buttons();

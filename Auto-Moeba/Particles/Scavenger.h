@@ -17,6 +17,16 @@ public:
 		return LIGHTGRAY;
 	}
 
+	float get_max_health() const override
+	{
+		return 150.0f;
+	}
+
+	float get_health_decay() const override
+	{
+		return 2.0f;
+	}
+
 protected:
 	vector<ParticleType> get_types() const override
 	{
@@ -25,11 +35,13 @@ protected:
 
 	void collide(const vector<shared_ptr<Particle>>& collisions) override;
 
+	void step_specific(const vector<shared_ptr<Particle>>& particles) override;
+
 	float scale_attraction(float attraction, const shared_ptr<const Particle>& other, const RelativePosition& rel_pos) const override;
 
 private:
 	static inline constexpr int _waste_to_reproduce = 3;
-	static int _current_waste;
+	int _current_waste = 0;
 
 	static inline RegisterParticle<Scavenger> reg{ "Scavenger" };
 };
