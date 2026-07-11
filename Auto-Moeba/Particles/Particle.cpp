@@ -45,7 +45,7 @@ void Particle::update_acceleration(const vector<shared_ptr<Particle>>& particles
 		if (rel_pos.dist > _effect_radius) continue;
 
 		float attract = 0.0f;
-		for (auto type : particle->get_types())
+		for (auto type : get_types())
 		{
 			attract += attractions.at(type);
 		}
@@ -88,11 +88,13 @@ bool Particle::is_type(ParticleType type) const
 
 void Particle::generate_type_attractions()
 {
+	const int type_count = static_cast<int>(ParticleType::End);
+
 	for (auto type : get_types())
 	{
 		auto atts = TypeAttractions::get_attractions(type);
 
-		for (int i = 0; i < static_cast<int>(ParticleType::End); ++i)
+		for (int i = 0; i < type_count; ++i)
 		{
 			auto add_type = static_cast<ParticleType>(i);
 			_attractions[add_type] += atts[add_type];

@@ -21,10 +21,10 @@ class Particle : public enable_shared_from_this<Particle>
 {
 public:
 	static inline constexpr float _effect_radius = 2000.0f;
-	static inline constexpr float _attraction_scale = 20.0f;
+	static inline constexpr float _attraction_scale = 1.0f;
 	static inline constexpr float _max_acceleration = numeric_limits<float>::max();
 	static inline constexpr float _acceleration_scale = 3.0f;
-	static inline constexpr float _velocity_decay = 0.2f;
+	static inline constexpr float _velocity_decay = 0.35f;
 
 	Particle() {}
 

@@ -55,8 +55,8 @@ struct TypeAttractions
 	{
 		return unordered_map<ParticleType, float>
 		{
-			{ ParticleType::Predator, -1.0f },
-			{ ParticleType::Prey, -2500.0f },
+			{ ParticleType::Predator, -10.0f },
+			{ ParticleType::Prey, -40.0f },
 			{ ParticleType::Scavenger, 0.0f },
 			{ ParticleType::Membrane, 0.0f },
 			{ ParticleType::Nucleus, 0.0f },
@@ -71,8 +71,8 @@ struct TypeAttractions
 	{
 		return unordered_map<ParticleType, float>
 		{
-			{ ParticleType::Predator, 50.0f },
-			{ ParticleType::Prey, 1.0f },
+			{ ParticleType::Predator, 40.0f },
+			{ ParticleType::Prey, 5.0f },
 			{ ParticleType::Scavenger, 0.0f },
 			{ ParticleType::Membrane, 0.0f },
 			{ ParticleType::Nucleus, 0.0f },

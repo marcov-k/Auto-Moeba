@@ -106,6 +106,7 @@ void Simulation::render_loop(int window_width, int window_height)
 
 			ParticleHandler::finalize_removes();
 		}
+		ParticleHandler::finalize_adds();
 	}
 }
 

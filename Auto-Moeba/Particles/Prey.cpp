@@ -1,10 +1,25 @@
 #include "Prey.h"
 
+int Prey::_current_food = 0;
+
 void Prey::collide(const vector<shared_ptr<Particle>>& collisions)
 {
 	for (auto& particle : collisions)
 	{
-		if (particle->is_type(ParticleType::Predator)) ParticleHandler::remove_particle(this);
+		if (particle->is_type(ParticleType::Predator))
+		{
+			ParticleHandler::remove_particle(this);
+			break;
+		}
+		else if (particle->is_type(ParticleType::Food))
+		{
+			_current_food++;
+			if (_current_food >= _food_to_reproduce)
+			{
+				_current_food = 0;
+				ParticleHandler::add_particle(make_shared<Prey>(particle->get_position()));
+			}
+		}
 	}
 }
 

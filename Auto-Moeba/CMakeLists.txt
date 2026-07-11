@@ -23,7 +23,7 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(raylib)
 
 # Define your game executable
-add_executable(Auto-Moeba Auto-Moeba.cpp "Particles/Particle.h" "Particles/Particle.cpp" "Utilities.h" "Utilities.cpp" "Particles.h" "Button.h" "Button.cpp" "Particles/TypeAttractions.h" "Particles/Predator.h" "Particles/Predator.cpp" "Particles/Prey.h" "Particles/Prey.cpp" "ParticleHandler.h" "ParticleHandler.cpp" "Particles/Food.h" "Particles/Food.cpp")
+add_executable(Auto-Moeba Auto-Moeba.cpp "Particles/Particle.h" "Particles/Particle.cpp" "Utilities.h" "Utilities.cpp" "Particles.h" "Button.h" "Button.cpp" "Particles/TypeAttractions.h" "Particles/Predator.h" "Particles/Predator.cpp" "Particles/Prey.h" "Particles/Prey.cpp" "ParticleHandler.h" "ParticleHandler.cpp" "Particles/Food.h" "Particles/Food.cpp" "Particles/Waste.h" "Particles/Waste.cpp" "Particles/Scavenger.h" "Particles/Scavenger.cpp")
 
 # Link your executable to raylib
 target_link_libraries(Auto-Moeba PRIVATE raylib)

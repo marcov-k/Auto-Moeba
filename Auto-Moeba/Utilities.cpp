@@ -9,6 +9,11 @@ RelativePosition Utilities::relative_position(const Vector2& a, const Vector2& b
 	return RelativePosition{ Vector2{ x_dist, y_dist }, dist };
 }
 
+Vector2 Utilities::add_vector(const Vector2& a, const Vector2& b)
+{
+	return Vector2{ a.x + b.x, a.y + b.y };
+}
+
 Vector2 Utilities::unit_vector(const Vector2& v)
 {
 	float mag = hypot(v.x, v.y);

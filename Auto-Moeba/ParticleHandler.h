@@ -10,6 +10,7 @@ class Particle;
 struct ParticleHandler
 {
 	static vector<shared_ptr<Particle>> particles;
+	static vector<shared_ptr<Particle>> added;
 	static vector<Particle*> removed;
 
 	ParticleHandler() = delete;
@@ -17,6 +18,8 @@ struct ParticleHandler
 	static void add_particle(shared_ptr<Particle> particle);
 
 	static void remove_particle(Particle* particle);
+
+	static void finalize_adds();
 
 	static void finalize_removes();
 };
