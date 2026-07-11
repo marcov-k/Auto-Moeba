@@ -21,8 +21,10 @@ class Particle : public enable_shared_from_this<Particle>
 {
 public:
 	static inline constexpr float _effect_radius = 2000.0f;
-	static inline constexpr float _attraction_scale = 10.0f;
-	static inline constexpr float _max_attraction = numeric_limits<float>::max();
+	static inline constexpr float _attraction_scale = 20.0f;
+	static inline constexpr float _max_acceleration = numeric_limits<float>::max();
+	static inline constexpr float _acceleration_scale = 3.0f;
+	static inline constexpr float _velocity_decay = 0.2f;
 
 	Particle() {}
 
@@ -63,7 +65,9 @@ public:
 
 	void step(const vector<shared_ptr<Particle>>& particles)
 	{
-		generate_next_position(particles);
+		update_acceleration(particles);
+		update_velocity();
+		update_next_position();
 	}
 
 	void check_collisions(const vector<shared_ptr<Particle>>& particles);
@@ -76,6 +80,8 @@ public:
 protected:
 	Vector2 _position = { 0.0f, 0.0f };
 	Vector2 _next_position = { 0.0f, 0.0f };
+	Vector2 _velocity = { 0.0f, 0.0f };
+	Vector2 _acceleration = { 0.0f, 0.0f };
 
 	virtual vector<ParticleType> get_types() const = 0;
 
@@ -88,7 +94,11 @@ private:
 
 	void generate_type_attractions();
 
-	void generate_next_position(const vector<shared_ptr<Particle>>& particles);
+	void update_acceleration(const vector<shared_ptr<Particle>>& particles);
+
+	void update_velocity();
+
+	void update_next_position();
 };
 
 template <typename T>

@@ -30,9 +30,9 @@ void Particle::check_collisions(const vector<shared_ptr<Particle>>& particles)
 	collide(collisions);
 }
 
-void Particle::generate_next_position(const vector<shared_ptr<Particle>>& particles)
+void Particle::update_acceleration(const vector<shared_ptr<Particle>>& particles)
 {
-	Vector2 attraction{ 0.0f, 0.0f };
+	_acceleration = { 0.0f, 0.0f };
 
 	for (auto& particle : particles)
 	{
@@ -42,30 +42,38 @@ void Particle::generate_next_position(const vector<shared_ptr<Particle>>& partic
 
 		auto rel_pos = Utilities::relative_position(particle->get_position(), _position);
 
-		if (rel_pos.dist < _effect_radius)
-		{
-			float attract = 0.0f;
-			for (auto type : particle->get_types())
-			{
-				attract += attractions.at(type);
-			}
+		if (rel_pos.dist > _effect_radius) continue;
 
-			attract = scale_attraction(attract, particle, rel_pos);
-			auto scale_vec = Utilities::project_vector(1.0f / rel_pos.dist, rel_pos.offset);
-			auto attract_vec = Utilities::project_vector(attract * _attraction_scale, scale_vec);
-			attraction.x += attract_vec.x;
-			attraction.y += attract_vec.y;
+		float attract = 0.0f;
+		for (auto type : particle->get_types())
+		{
+			attract += attractions.at(type);
 		}
+
+		attract = scale_attraction(attract, particle, rel_pos);
+		auto scale_vec = Utilities::project_vector(1.0f / rel_pos.dist, rel_pos.offset);
+		auto attract_vec = Utilities::project_vector(attract * _attraction_scale, scale_vec);
+		_acceleration.x += attract_vec.x;
+		_acceleration.y += attract_vec.y;
 	}
 
-	auto dir = Utilities::unit_vector(attraction);
-	float attract_mag = Utilities::vector_magnitude(attraction);
-	attract_mag = min(attract_mag, _max_attraction);
+	auto dir = Utilities::unit_vector(_acceleration);
+	float accel_mag = Utilities::vector_magnitude(_acceleration);
+	accel_mag = min(accel_mag, _max_acceleration);
+	_acceleration = Utilities::project_vector(accel_mag, dir);
+}
 
-	auto move = Utilities::project_vector(attract_mag, dir);
+void Particle::update_velocity()
+{
+	_velocity.x += _acceleration.x * _acceleration_scale * GetFrameTime();
+	_velocity.y += _acceleration.y * _acceleration_scale * GetFrameTime();
+	_velocity = Utilities::project_vector(1.0f - _velocity_decay * GetFrameTime(), _velocity);
+}
 
-	_next_position.x = _position.x + move.x * GetFrameTime();
-	_next_position.y = _position.y + move.y * GetFrameTime();
+void Particle::update_next_position()
+{
+	_next_position.x = _position.x + _velocity.x * GetFrameTime();
+	_next_position.y = _position.y + _velocity.y * GetFrameTime();
 }
 
 bool Particle::is_type(ParticleType type) const

@@ -15,6 +15,8 @@ int main()
 vector<Button> Simulation::particle_buttons;
 int Simulation::selected_particle = 0;
 bool Simulation::paused = true;
+bool Simulation::can_spawn = true;
+float Simulation::spawn_timer = 0.0f;
 
 void Simulation::render_loop(int window_width, int window_height)
 {
@@ -41,10 +43,7 @@ void Simulation::render_loop(int window_width, int window_height)
 			if (button.is_pressed()) selected_particle = button.get_particle_id();
 		}
 
-		if (IsMouseButtonReleased(MOUSE_LEFT_BUTTON) && !any_button_hovered())
-		{
-			spawn_particle(camera);
-		}
+		check_spawns(camera);
 
 		if (IsKeyDown(KEY_A)) camera.target.x -= current_speed;
 		if (IsKeyDown(KEY_D)) camera.target.x += current_speed;
@@ -159,6 +158,40 @@ bool Simulation::any_button_hovered()
 		if (button.get_is_hovered()) return true;
 	}
 	return false;
+}
+
+bool Simulation::any_particle_hovered(Camera2D& camera)
+{
+	auto mouse_pos = GetScreenToWorld2D(GetMousePosition(), camera);
+	for (auto& particle : ParticleHandler::particles)
+	{
+		if (CheckCollisionPointCircle(mouse_pos, particle->get_position(), particle->get_size())) return true;
+	}
+	return false;
+}
+
+void Simulation::check_spawns(Camera2D& camera)
+{
+	if (IsMouseButtonDown(MOUSE_LEFT_BUTTON) && !any_button_hovered() && !any_particle_hovered(camera))
+	{
+		if (can_spawn)
+		{
+			can_spawn = false;
+			spawn_particle(camera);
+		}
+		else spawn_timer += GetFrameTime();
+
+		if (spawn_timer >= _spawn_interval)
+		{
+			can_spawn = true;
+			spawn_timer = 0.0f;
+		}
+	}
+	else if (!IsMouseButtonDown(MOUSE_LEFT_BUTTON))
+	{
+		can_spawn = true;
+		spawn_timer = 0.0f;
+	}
 }
 
 void Simulation::spawn_particle(Camera2D& camera)

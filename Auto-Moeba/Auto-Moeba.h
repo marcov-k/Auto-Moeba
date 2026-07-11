@@ -15,6 +15,8 @@ struct Simulation
 {
 	static inline constexpr int _target_fps = 120;
 
+	static inline constexpr float _spawn_interval = 0.02f;
+
 	static inline constexpr float _zoom_speed = 0.05f;
 	static inline constexpr float _move_speed = 500.0f;
 
@@ -32,6 +34,8 @@ struct Simulation
 	static vector<Button> particle_buttons;
 	static int selected_particle;
 	static bool paused;
+	static bool can_spawn;
+	static float spawn_timer;
 
 	Simulation() = delete;
 
@@ -44,6 +48,10 @@ struct Simulation
 	static void render_ui_text(int window_width);
 
 	static bool any_button_hovered();
+
+	static bool any_particle_hovered(Camera2D& camera);
+
+	static void check_spawns(Camera2D& camera);
 
 	static void spawn_particle(Camera2D& camera);
 };
