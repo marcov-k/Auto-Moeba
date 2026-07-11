@@ -16,18 +16,26 @@ void Particle::check_collisions(const vector<shared_ptr<Particle>>& particles)
 
 		auto rel_pos = Utilities::relative_position(particle->get_position(), _position);
 
+		Vector2 move_vec{ 0.0f, 0.0f };
 		float min_dist = particle->get_size() + get_size();
-		if (rel_pos.dist <= min_dist)
+		if (rel_pos.dist < _min_dist_threshold)
+		{
+			collisions.push_back(particle);
+
+			auto dir = Utilities::unit_vector(rel_pos.offset);
+			move_vec = Utilities::project_vector(_min_dist_threshold, dir);
+		}
+		else if (rel_pos.dist <= min_dist)
 		{
 			collisions.push_back(particle);
 
 			float correction = min_dist - rel_pos.dist;
 			auto dir = Utilities::unit_vector(rel_pos.offset);
-			auto corr_vec = Utilities::project_vector(correction, dir);
-
-			adjusted_pos.x -= corr_vec.x;
-			adjusted_pos.y -= corr_vec.y;
+			move_vec = Utilities::project_vector(correction, dir);
 		}
+
+		adjusted_pos.x -= move_vec.x;
+		adjusted_pos.y -= move_vec.y;
 	}
 	_next_position = adjusted_pos;
 
@@ -48,7 +56,7 @@ void Particle::update_acceleration(const vector<shared_ptr<Particle>>& particles
 
 		auto rel_pos = Utilities::relative_position(particle->get_position(), _position);
 
-		if (rel_pos.dist > _effect_radius) continue;
+		if (rel_pos.dist > _effect_radius || rel_pos.dist < _min_dist_threshold) continue;
 
 		float attract = 0.0f;
 		for (auto type : get_types())

@@ -21,12 +21,6 @@ using namespace std;
 class Particle : public enable_shared_from_this<Particle>
 {
 public:
-	static inline constexpr float _effect_radius = 2000.0f;
-	static inline constexpr float _attraction_scale = 1.0f;
-	static inline constexpr float _max_acceleration = numeric_limits<float>::max();
-	static inline constexpr float _acceleration_scale = 3.0f;
-	static inline constexpr float _velocity_decay = 0.9f;
-
 	Particle() {}
 
 	Particle(const Vector2& start_position) : _position(start_position), _next_position(start_position) {}
@@ -90,6 +84,13 @@ public:
 	}
 
 protected:
+	static inline constexpr float _effect_radius = 2000.0f;
+	static inline constexpr float _attraction_scale = 1.0f;
+	static inline constexpr float _max_acceleration = numeric_limits<float>::max();
+	static inline constexpr float _acceleration_scale = 3.0f;
+	static inline constexpr float _velocity_decay = 0.9f;
+	static inline constexpr float _min_dist_threshold = 4.0f;
+
 	Vector2 _position = { 0.0f, 0.0f };
 	Vector2 _next_position = { 0.0f, 0.0f };
 	Vector2 _velocity = { 0.0f, 0.0f };
