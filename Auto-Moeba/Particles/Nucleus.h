@@ -30,7 +30,7 @@ public:
 protected:
 	vector<ParticleType> get_types() const override
 	{
-		return { ParticleType::Nucleus, ParticleType::Prey };
+		return { ParticleType::Nucleus };
 	}
 
 	void collide(const vector<shared_ptr<Particle>>& collisions) override;

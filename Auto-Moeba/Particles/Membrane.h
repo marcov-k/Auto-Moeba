@@ -30,7 +30,7 @@ public:
 protected:
 	vector<ParticleType> get_types() const override
 	{
-		return { ParticleType::Membrane, ParticleType::Prey };
+		return { ParticleType::Membrane };
 	}
 
 	void collide(const vector<shared_ptr<Particle>>& collisions) override;
@@ -38,7 +38,7 @@ protected:
 	float scale_attraction(float attraction, const shared_ptr<const Particle>& other, const RelativePosition& rel_pos) override;
 
 private:
-	static inline constexpr float _min_dist_mult = 1.3f;
+	static inline constexpr float _min_dist_mult = 1.75f;
 	static inline constexpr int _food_to_reproduce = 1;
 	int _current_food = 0;
 

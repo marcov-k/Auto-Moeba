@@ -90,7 +90,7 @@ protected:
 	static inline constexpr float _collision_correction = 0.7f;
 	static inline constexpr float _acceleration_scale = 20.0f;
 	static inline constexpr float _velocity_decay = 0.8f;
-	static inline constexpr float _eat_health_threshold = 0.95f;
+	static inline constexpr float _eat_health_threshold = 0.8f;
 	static inline constexpr float _mutation_range = 5.0f;
 
 	Vector2 _position = { 0.0f, 0.0f };

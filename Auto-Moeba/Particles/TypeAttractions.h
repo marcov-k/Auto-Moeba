@@ -75,7 +75,7 @@ struct TypeAttractions
 		{
 			{ ParticleType::Predator, -10.0f },
 			{ ParticleType::Prey, -40.0f },
-			{ ParticleType::Scavenger, 4.0f },
+			{ ParticleType::Scavenger, 6.0f },
 			{ ParticleType::Membrane, -30.0f },
 			{ ParticleType::Nucleus, 0.0f },
 			{ ParticleType::Connector, 5.0f },
@@ -105,7 +105,7 @@ struct TypeAttractions
 	{
 		return unordered_map<ParticleType, float>
 		{
-			{ ParticleType::Predator, 10.0f },
+			{ ParticleType::Predator, -1.0f },
 			{ ParticleType::Prey, 0.0f },
 			{ ParticleType::Scavenger, -5.0f },
 			{ ParticleType::Membrane, 0.0f },
@@ -121,10 +121,10 @@ struct TypeAttractions
 	{
 		return unordered_map<ParticleType, float>
 		{
-			{ ParticleType::Predator, -5.0f },
+			{ ParticleType::Predator, 30.0f },
 			{ ParticleType::Prey, 0.0f },
 			{ ParticleType::Scavenger, 0.0f },
-			{ ParticleType::Membrane, 15.0f },
+			{ ParticleType::Membrane, 2.0f },
 			{ ParticleType::Nucleus, 0.0f },
 			{ ParticleType::Connector, 5.0f },
 			{ ParticleType::Anchor, 1.0f },
@@ -140,7 +140,7 @@ struct TypeAttractions
 			{ ParticleType::Predator, 10.0f },
 			{ ParticleType::Prey, 0.0f },
 			{ ParticleType::Scavenger, 0.0f },
-			{ ParticleType::Membrane, 50.0f },
+			{ ParticleType::Membrane, 100.0f },
 			{ ParticleType::Nucleus, 300.0f },
 			{ ParticleType::Connector, 5.0f },
 			{ ParticleType::Anchor, 1.0f },
@@ -189,7 +189,7 @@ struct TypeAttractions
 			{ ParticleType::Prey, 20.0f },
 			{ ParticleType::Scavenger, 0.0f },
 			{ ParticleType::Membrane, 20.0f },
-			{ ParticleType::Nucleus, 20.0f },
+			{ ParticleType::Nucleus, 30.0f },
 			{ ParticleType::Connector, 20.0f },
 			{ ParticleType::Anchor, 0.0f },
 			{ ParticleType::Food, 0.0f },
