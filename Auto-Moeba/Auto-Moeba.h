@@ -29,7 +29,8 @@ struct Simulation
 	static inline constexpr Color _button_base_color = YELLOW;
 	static inline constexpr Color _button_hover_color = GOLD;
 	static inline constexpr Color _button_press_color = BROWN;
-	static inline constexpr int _button_spacing = 25;
+	static inline constexpr int _button_spacing = 15;
+	static inline constexpr int _button_padding_bottom = 10;
 
 	static vector<Button> particle_buttons;
 	static int selected_particle;

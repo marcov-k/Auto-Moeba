@@ -11,7 +11,7 @@ void Prey::collide(const vector<shared_ptr<Particle>>& collisions)
 		}
 		else if (particle->is_type(ParticleType::Food) && can_eat())
 		{
-			_health.value() = get_max_health();
+			_ate = true;
 
 			_current_food++;
 			if (_current_food >= _food_to_reproduce)

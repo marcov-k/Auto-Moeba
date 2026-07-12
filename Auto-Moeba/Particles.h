@@ -7,7 +7,6 @@
 #include "Particles/Membrane.h"
 #include "Particles/Nucleus.h"
 #include "Particles/Connector.h"
-#include "Particles/Anchor.h"
 #include "Particles/Food.h"
 #include "Particles/Waste.h"
 #include "Particles/Nutrients.h"

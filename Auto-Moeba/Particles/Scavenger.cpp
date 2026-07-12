@@ -9,7 +9,7 @@ void Scavenger::collide(const vector<shared_ptr<Particle>>& collisions)
 	{
 		if (particle->is_type(ParticleType::Waste))
 		{
-			_health.value() = get_max_health();
+			_ate = true;
 
 			auto rel_pos = Utilities::relative_position(particle->get_position(), _position);
 			auto reverse_pos = Utilities::project_vector(-1.0f, rel_pos.offset);

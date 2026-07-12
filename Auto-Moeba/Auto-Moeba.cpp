@@ -125,7 +125,7 @@ void Simulation::init_buttons(int window_width, int window_height)
 	const float button_width = (float)button_width_total - _button_spacing;
 	const float button_height = window_height / 20.0f;
 	
-	const float button_pos_y = window_height - button_height;
+	const float button_pos_y = window_height - button_height - _button_padding_bottom;
 	for (int i = 0; i < particle_type_count; ++i)
 	{
 		const float button_pos_x = _button_spacing + (button_width_total * i);

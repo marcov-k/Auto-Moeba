@@ -14,7 +14,6 @@ enum class ParticleType
 	Membrane,
 	Nucleus,
 	Connector,
-	Anchor,
 	Food,
 	Waste,
 	End
@@ -40,8 +39,6 @@ struct TypeAttractions
 			return nucleus();
 		case ParticleType::Connector:
 			return connector();
-		case ParticleType::Anchor:
-			return anchor();
 		case ParticleType::Food:
 			return food();
 		case ParticleType::Waste:
@@ -63,7 +60,6 @@ struct TypeAttractions
 			{ ParticleType::Membrane, 0.0f },
 			{ ParticleType::Nucleus, 0.0f },
 			{ ParticleType::Connector, 0.0f },
-			{ ParticleType::Anchor, 0.0f },
 			{ ParticleType::Food, 0.0f },
 			{ ParticleType::Waste, 0.0f }
 		};
@@ -79,7 +75,6 @@ struct TypeAttractions
 			{ ParticleType::Membrane, -30.0f },
 			{ ParticleType::Nucleus, 0.0f },
 			{ ParticleType::Connector, 5.0f },
-			{ ParticleType::Anchor, 1.0f },
 			{ ParticleType::Food, 0.0f },
 			{ ParticleType::Waste, 0.0f }
 		};
@@ -95,7 +90,6 @@ struct TypeAttractions
 			{ ParticleType::Membrane, 0.0f },
 			{ ParticleType::Nucleus, 0.0f },
 			{ ParticleType::Connector, 5.0f },
-			{ ParticleType::Anchor, 1.0f },
 			{ ParticleType::Food, 0.0f },
 			{ ParticleType::Waste, 0.0f }
 		};
@@ -111,7 +105,6 @@ struct TypeAttractions
 			{ ParticleType::Membrane, 0.0f },
 			{ ParticleType::Nucleus, 0.0f },
 			{ ParticleType::Connector, 5.0f },
-			{ ParticleType::Anchor, 1.0f },
 			{ ParticleType::Food, 0.0f },
 			{ ParticleType::Waste, 0.0f }
 		};
@@ -127,7 +120,6 @@ struct TypeAttractions
 			{ ParticleType::Membrane, 2.0f },
 			{ ParticleType::Nucleus, 0.0f },
 			{ ParticleType::Connector, 5.0f },
-			{ ParticleType::Anchor, 1.0f },
 			{ ParticleType::Food, 0.0f },
 			{ ParticleType::Waste, 0.0f }
 		};
@@ -143,7 +135,6 @@ struct TypeAttractions
 			{ ParticleType::Membrane, 200.0f },
 			{ ParticleType::Nucleus, 300.0f },
 			{ ParticleType::Connector, 5.0f },
-			{ ParticleType::Anchor, 1.0f },
 			{ ParticleType::Food, 0.0f },
 			{ ParticleType::Waste, 0.0f }
 		};
@@ -159,23 +150,6 @@ struct TypeAttractions
 			{ ParticleType::Membrane, 5.0f },
 			{ ParticleType::Nucleus, 5.0f },
 			{ ParticleType::Connector, 5.0f },
-			{ ParticleType::Anchor, 1.0f },
-			{ ParticleType::Food, 0.0f },
-			{ ParticleType::Waste, 0.0f }
-		};
-	}
-
-	static unordered_map<ParticleType, float> anchor()
-	{
-		return unordered_map<ParticleType, float>
-		{
-			{ ParticleType::Predator, 50.0f },
-			{ ParticleType::Prey, 50.0f },
-			{ ParticleType::Scavenger, 50.0f },
-			{ ParticleType::Membrane, 50.0f },
-			{ ParticleType::Nucleus, 50.0f },
-			{ ParticleType::Connector, 50.0f },
-			{ ParticleType::Anchor, 50.0f },
 			{ ParticleType::Food, 0.0f },
 			{ ParticleType::Waste, 0.0f }
 		};
@@ -191,7 +165,6 @@ struct TypeAttractions
 			{ ParticleType::Membrane, 40.0f },
 			{ ParticleType::Nucleus, 60.0f },
 			{ ParticleType::Connector, 30.0f },
-			{ ParticleType::Anchor, 0.0f },
 			{ ParticleType::Food, 0.0f },
 			{ ParticleType::Waste, 0.0f }
 		};
@@ -207,7 +180,6 @@ struct TypeAttractions
 			{ ParticleType::Membrane, -5.0f },
 			{ ParticleType::Nucleus, -5.0f },
 			{ ParticleType::Connector, -5.0f },
-			{ ParticleType::Anchor, 0.0f },
 			{ ParticleType::Food, 0.0f },
 			{ ParticleType::Waste, 0.0f }
 		};

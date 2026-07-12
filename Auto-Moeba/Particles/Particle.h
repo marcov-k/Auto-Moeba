@@ -81,6 +81,11 @@ public:
 	void update_position()
 	{
 		_position = _next_position;
+		if (_ate)
+		{
+			_ate = false;
+			get_health() = get_max_health();
+		}
 	}
 
 protected:
@@ -99,6 +104,7 @@ protected:
 	Vector2 _velocity = { 0.0f, 0.0f };
 	Vector2 _acceleration = { 0.0f, 0.0f };
 	optional<float> _health;
+	bool _ate = false;
 
 	virtual vector<ParticleType> get_types() const = 0;
 
