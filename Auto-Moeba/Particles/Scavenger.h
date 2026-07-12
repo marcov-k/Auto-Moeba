@@ -35,6 +35,8 @@ protected:
 
 	void collide(const vector<shared_ptr<Particle>>& collisions) override;
 
+	float scale_attraction(float attraction, const shared_ptr<const Particle>& other, const RelativePosition& rel_pos) override;
+
 private:
 	static inline constexpr int _waste_to_reproduce = 3;
 	int _current_waste = 0;

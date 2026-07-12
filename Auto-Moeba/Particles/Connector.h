@@ -35,7 +35,10 @@ protected:
 
 	void collide(const vector<shared_ptr<Particle>>& collisions) override;
 
+	float scale_attraction(float attraction, const shared_ptr<const Particle>& other, const RelativePosition& rel_pos) override;
+
 private:
+	static inline constexpr float _min_dist_mult = 1.2f;
 	static inline constexpr int _food_to_reproduce = 1;
 	int _current_food = 0;
 

@@ -6,36 +6,40 @@ void Particle::check_collisions(const vector<shared_ptr<Particle>>& particles)
 {
 	vector<shared_ptr<Particle>> collisions;
 
-	Vector2 adjusted_pos = _position;
+	vector<Vector2> moves;
 
 	for (const auto& particle : particles)
 	{
 		if (particle.get() == this) continue;
 
-		auto rel_pos = Utilities::relative_position(particle->get_position(), _position);
+		const auto rel_pos = Utilities::relative_position(particle->get_position(), _position);
 
-		Vector2 move_vec{ 0.0f, 0.0f };
-		float min_dist = particle->get_size() + get_size();
-		if (rel_pos.dist < _min_dist_threshold)
+		const float min_dist = particle->get_size() + get_size();
+		if (rel_pos.dist <= min_dist)
 		{
 			collisions.push_back(particle);
 
-			auto dir = Utilities::unit_vector(rel_pos.offset);
-			move_vec = Utilities::project_vector(_min_dist_threshold, dir);
+			const float correction = _collision_correction * (min_dist - rel_pos.dist);
+			const auto dir = Utilities::unit_vector(rel_pos.offset);
+			moves.push_back(Utilities::project_vector(-correction, dir));
 		}
-		else if (rel_pos.dist <= min_dist)
-		{
-			collisions.push_back(particle);
-
-			float correction = min_dist - rel_pos.dist;
-			auto dir = Utilities::unit_vector(rel_pos.offset);
-			move_vec = Utilities::project_vector(correction, dir);
-		}
-
-		adjusted_pos.x -= move_vec.x;
-		adjusted_pos.y -= move_vec.y;
 	}
-	_next_position = adjusted_pos;
+
+	if (!moves.empty())
+	{
+		float move_count = (float)moves.size();
+		Vector2 total_move = { 0.0f, 0.0f };
+		for (const auto& move : moves)
+		{
+			total_move.x += move.x;
+			total_move.y += move.y;
+		}
+		total_move.x /= move_count;
+		total_move.y /= move_count;
+
+		_next_position.x = _position.x + total_move.x;
+		_next_position.y = _position.y + total_move.y;
+	}
 
 	collide(collisions);
 }
@@ -50,9 +54,10 @@ void Particle::update_acceleration(const vector<shared_ptr<Particle>>& particles
 
 		const auto& attractions = particle->get_attractions();
 
-		auto rel_pos = Utilities::relative_position(particle->get_position(), _position);
+		const auto rel_pos = Utilities::relative_position(particle->get_position(), _position);
 
-		if (rel_pos.dist > _effect_radius || rel_pos.dist < _min_dist_threshold) continue;
+		const float min_dist = particle->get_size() + get_size();
+		if (rel_pos.dist > _effect_radius || rel_pos.dist < min_dist) continue;
 
 		float attract = 0.0f;
 		for (auto type : get_types())
@@ -61,13 +66,13 @@ void Particle::update_acceleration(const vector<shared_ptr<Particle>>& particles
 		}
 
 		attract = scale_attraction(attract, particle, rel_pos);
-		auto dir = Utilities::unit_vector(rel_pos.offset);
-		auto attract_vec = Utilities::project_vector(_attraction_scale * scale_attraction_by_dist(attract, rel_pos.dist), dir);
+		const auto dir = Utilities::unit_vector(rel_pos.offset);
+		const auto attract_vec = Utilities::project_vector(_attraction_scale * scale_attraction_by_dist(attract, rel_pos.dist), dir);
 		_acceleration.x += attract_vec.x;
 		_acceleration.y += attract_vec.y;
 	}
 
-	auto dir = Utilities::unit_vector(_acceleration);
+	const auto dir = Utilities::unit_vector(_acceleration);
 	float accel_mag = Utilities::vector_magnitude(_acceleration);
 	accel_mag = min(accel_mag, _max_acceleration);
 	_acceleration = Utilities::project_vector(accel_mag, dir);

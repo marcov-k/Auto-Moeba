@@ -87,10 +87,10 @@ protected:
 	static inline constexpr float _effect_radius = 2000.0f;
 	static inline constexpr float _attraction_scale = 3.0f;
 	static inline constexpr float _max_acceleration = numeric_limits<float>::max();
+	static inline constexpr float _collision_correction = 0.7f;
 	static inline constexpr float _acceleration_scale = 20.0f;
 	static inline constexpr float _velocity_decay = 0.8f;
-	static inline constexpr float _min_dist_threshold = 4.0f;
-	static inline constexpr float _eat_health_threshold = 0.6f;
+	static inline constexpr float _eat_health_threshold = 0.95f;
 	static inline constexpr float _mutation_range = 5.0f;
 
 	Vector2 _position = { 0.0f, 0.0f };
@@ -108,7 +108,7 @@ protected:
 
 	virtual void step_specific(const vector<shared_ptr<Particle>>& particles) {}
 
-	virtual float scale_attraction(float attraction, const shared_ptr<const Particle>& other, const RelativePosition& rel_pos) const
+	virtual float scale_attraction(float attraction, const shared_ptr<const Particle>& other, const RelativePosition& rel_pos)
 	{
 		return attraction;
 	}

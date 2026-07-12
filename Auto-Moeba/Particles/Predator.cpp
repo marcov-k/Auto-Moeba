@@ -28,3 +28,12 @@ void Predator::collide(const vector<shared_ptr<Particle>>& collisions)
 		}
 	}
 }
+
+float Predator::scale_attraction(float attraction, const shared_ptr<const Particle>& other, const RelativePosition& rel_pos)
+{
+	if (other->is_type(ParticleType::Prey))
+	{
+		return can_eat() ? attraction : 0.25f * attraction;
+	}
+	return attraction;
+}
