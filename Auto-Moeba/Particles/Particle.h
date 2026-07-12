@@ -78,29 +78,27 @@ public:
 		_position = _next_position;
 	}
 
-	void kill()
-	{
-		_is_dead = true;
-	}
-
 protected:
 	static inline constexpr float _effect_radius = 2000.0f;
-	static inline constexpr float _attraction_scale = 1.0f;
+	static inline constexpr float _attraction_scale = 3.0f;
 	static inline constexpr float _max_acceleration = numeric_limits<float>::max();
 	static inline constexpr float _acceleration_scale = 20.0f;
-	static inline constexpr float _velocity_decay = 0.9f;
+	static inline constexpr float _velocity_decay = 0.8f;
 	static inline constexpr float _min_dist_threshold = 4.0f;
+	static inline constexpr float _mutation_range = 5.0f;
 
 	Vector2 _position = { 0.0f, 0.0f };
 	Vector2 _next_position = { 0.0f, 0.0f };
 	Vector2 _velocity = { 0.0f, 0.0f };
 	Vector2 _acceleration = { 0.0f, 0.0f };
 	optional<float> _health;
-	bool _is_dead = false;
 
 	virtual vector<ParticleType> get_types() const = 0;
 
 	virtual void collide(const vector<shared_ptr<Particle>>& collisions) {}
+
+	static void reproduce(const Vector2& start_position, Particle* parent,
+		const function<shared_ptr<Particle>(const Vector2&)> factory);
 
 	virtual void step_specific(const vector<shared_ptr<Particle>>& particles) {}
 
@@ -114,11 +112,15 @@ private:
 
 	void generate_type_attractions();
 
+	void generate_child_attractions(const unordered_map<ParticleType, float>& parent_attractions);
+
 	void update_acceleration(const vector<shared_ptr<Particle>>& particles);
 
 	void update_velocity();
 
 	void update_next_position();
+
+	float scale_attraction_by_dist(float attraction, float distance);
 
 	void step_general();
 };

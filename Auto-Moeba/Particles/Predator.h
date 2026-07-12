@@ -36,7 +36,7 @@ protected:
 	void collide(const vector<shared_ptr<Particle>>& collisions) override;
 
 private:
-	static inline constexpr int _prey_to_reproduce = 3;
+	static inline constexpr int _prey_to_reproduce = 4;
 	int _current_prey = 0;
 
 	static inline RegisterParticle<Predator> reg{ "Predator" };

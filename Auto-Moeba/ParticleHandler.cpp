@@ -27,19 +27,15 @@ void ParticleHandler::finalize_adds()
 
 void ParticleHandler::finalize_removes()
 {
-	size_t removed_count = 0;
-	for (size_t i = 0; i < particles.size(); ++i)
-	{
-		for (auto& particle : removed)
-		{
-			if (particles[i].get() == particle)
+	if (removed.size() < 1) return;
+
+	particles.erase(
+		remove_if(particles.begin(), particles.end(),
+			[](const shared_ptr<Particle>& p)
 			{
-				particle->kill();
-				particles.erase(particles.begin() + i - removed_count);
-				removed_count++;
-				break;
-			}
-		}
-	}
+				return (bool)removed.count(p.get());
+			}),
+		particles.end()
+	);
 	removed.clear();
 }

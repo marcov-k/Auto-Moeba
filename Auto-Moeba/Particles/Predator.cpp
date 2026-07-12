@@ -18,7 +18,10 @@ void Predator::collide(const vector<shared_ptr<Particle>>& collisions)
 			if (_current_prey >= _prey_to_reproduce)
 			{
 				_current_prey = 0;
-				ParticleHandler::add_particle(make_shared<Predator>(particle->get_position()));
+				reproduce(particle->get_position(), this, [](const Vector2& start_pos) -> shared_ptr<Particle>
+					{
+						return make_shared<Predator>(start_pos);
+					});
 			}
 		}
 	}

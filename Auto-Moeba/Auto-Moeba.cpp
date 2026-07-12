@@ -82,7 +82,7 @@ void Simulation::render_loop(int window_width, int window_height)
 		{
 			simulation_step();
 		}
-		ParticleHandler::finalize_adds();
+		else ParticleHandler::finalize_adds();
 	}
 }
 
@@ -112,6 +112,7 @@ void Simulation::simulation_step()
 		particle->update_position();
 	}
 
+	ParticleHandler::finalize_adds();
 	ParticleHandler::finalize_removes();
 }
 
@@ -204,6 +205,5 @@ void Simulation::spawn_particle(Camera2D& camera)
 {
 	Vector2 spawn_pos = GetScreenToWorld2D(GetMousePosition(), camera);
 	auto& factory = Particle::get_registry()[selected_particle].create;
-
 	ParticleHandler::add_particle(factory(spawn_pos));
 }

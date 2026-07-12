@@ -39,7 +39,7 @@ protected:
 
 private:
 	static inline constexpr float _group_dist = 60.0f;
-	static inline constexpr int _food_to_reproduce = 4;
+	static inline constexpr int _food_to_reproduce = 2;
 	int _current_food = 0;
 
 	static inline RegisterParticle<Prey> reg{ "Prey" };

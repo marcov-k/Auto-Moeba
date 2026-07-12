@@ -4,15 +4,13 @@
 
 void Particle::check_collisions(const vector<shared_ptr<Particle>>& particles)
 {
-	if (_is_dead) return;
-
 	vector<shared_ptr<Particle>> collisions;
 
 	Vector2 adjusted_pos = _position;
 
 	for (const auto& particle : particles)
 	{
-		if (particle.get() == this || particle->_is_dead) continue;
+		if (particle.get() == this) continue;
 
 		auto rel_pos = Utilities::relative_position(particle->get_position(), _position);
 
@@ -46,8 +44,6 @@ void Particle::update_acceleration(const vector<shared_ptr<Particle>>& particles
 {
 	_acceleration = { 0.0f, 0.0f };
 
-	if (_is_dead) return;
-
 	for (auto& particle : particles)
 	{
 		if (particle.get() == this) continue;
@@ -66,7 +62,7 @@ void Particle::update_acceleration(const vector<shared_ptr<Particle>>& particles
 
 		attract = scale_attraction(attract, particle, rel_pos);
 		auto dir = Utilities::unit_vector(rel_pos.offset);
-		auto attract_vec = Utilities::project_vector(attract * _attraction_scale / (rel_pos.dist / 10.0f), dir);
+		auto attract_vec = Utilities::project_vector(_attraction_scale * scale_attraction_by_dist(attract, rel_pos.dist), dir);
 		_acceleration.x += attract_vec.x;
 		_acceleration.y += attract_vec.y;
 	}
@@ -88,6 +84,11 @@ void Particle::update_next_position()
 {
 	_next_position.x = _position.x + _velocity.x * GetFrameTime();
 	_next_position.y = _position.y + _velocity.y * GetFrameTime();
+}
+
+float Particle::scale_attraction_by_dist(float attraction, float distance)
+{
+	return attraction / distance;
 }
 
 void Particle::step_general()
@@ -138,5 +139,21 @@ void Particle::generate_type_attractions()
 			auto add_type = static_cast<ParticleType>(i);
 			_attractions[add_type] += atts[add_type];
 		}
+	}
+}
+
+void Particle::reproduce(const Vector2& start_position, Particle* parent,
+	const function<shared_ptr<Particle>(const Vector2&)> factory)
+{
+	auto child = factory(start_position);
+	child->generate_child_attractions(parent->get_attractions());
+	ParticleHandler::add_particle(child);
+}
+
+void Particle::generate_child_attractions(const unordered_map<ParticleType, float>& parent_attractions)
+{
+	for (auto& attraction : parent_attractions)
+	{
+		_attractions[attraction.first] = attraction.second + Utilities::generate_random(-_mutation_range, _mutation_range);
 	}
 }

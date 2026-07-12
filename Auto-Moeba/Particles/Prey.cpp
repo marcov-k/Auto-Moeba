@@ -17,7 +17,10 @@ void Prey::collide(const vector<shared_ptr<Particle>>& collisions)
 			if (_current_food >= _food_to_reproduce)
 			{
 				_current_food = 0;
-				ParticleHandler::add_particle(make_shared<Prey>(particle->get_position()));
+				reproduce(particle->get_position(), this, [](const Vector2& start_pos) -> shared_ptr<Particle>
+					{
+						return make_shared<Prey>(start_pos);
+					});
 			}
 		}
 	}

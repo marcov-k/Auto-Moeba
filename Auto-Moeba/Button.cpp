@@ -17,8 +17,8 @@ void Button::draw()
 	DrawRectangleLinesEx(_bounds, 2.0f, DARKGRAY);
 
 	int text_width = MeasureText(_text.c_str(), _font_size);
-	int text_x = _bounds.x + (_bounds.width - text_width) / 2;
-	int text_y = _bounds.y + (_bounds.height - _font_size) / 2;
+	int text_x = (int)(_bounds.x + (_bounds.width - text_width) / 2);
+	int text_y = (int)(_bounds.y + (_bounds.height - _font_size) / 2);
 
 	DrawText(_text.c_str(), text_x, text_y, _font_size, _font_color);
 }
