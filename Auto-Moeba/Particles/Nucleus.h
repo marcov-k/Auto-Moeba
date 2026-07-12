@@ -19,7 +19,7 @@ public:
 
 	float get_max_health() const override
 	{
-		return 200.0f;
+		return 100.0f;
 	}
 
 	float get_health_decay() const override
@@ -37,8 +37,10 @@ protected:
 
 	float scale_attraction(float attraction, const shared_ptr<const Particle>& other, const RelativePosition& rel_pos) override;
 
+	bool ignore_attraction(const shared_ptr<const Particle>& other, const RelativePosition& rel_pos) const override;
+
 private:
-	static inline constexpr float _min_dist_mult = 1.1f;
+	static inline constexpr float _min_dist_mult = 1.25f;
 	static inline constexpr int _food_to_reproduce = 3;
 	int _current_food = 0;
 

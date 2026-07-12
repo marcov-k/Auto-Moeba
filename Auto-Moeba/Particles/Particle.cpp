@@ -48,6 +48,7 @@ void Particle::update_acceleration(const vector<shared_ptr<Particle>>& particles
 {
 	_acceleration = { 0.0f, 0.0f };
 
+	vector<Vector2> zero_dirs;
 	for (auto& particle : particles)
 	{
 		if (particle.get() == this) continue;
@@ -56,8 +57,14 @@ void Particle::update_acceleration(const vector<shared_ptr<Particle>>& particles
 
 		const auto rel_pos = Utilities::relative_position(particle->get_position(), _position);
 
+		if (rel_pos.dist > _effect_radius) continue;
+
 		const float min_dist = particle->get_size() + get_size();
-		if (rel_pos.dist > _effect_radius || rel_pos.dist < min_dist) continue;
+
+		if (ignore_attraction(particle, rel_pos))
+		{
+			zero_dirs.push_back(Utilities::unit_vector(rel_pos.offset));
+		}
 
 		float attract = 0.0f;
 		for (auto type : get_types())
@@ -67,15 +74,17 @@ void Particle::update_acceleration(const vector<shared_ptr<Particle>>& particles
 
 		attract = scale_attraction(attract, particle, rel_pos);
 		const auto dir = Utilities::unit_vector(rel_pos.offset);
-		const auto attract_vec = Utilities::project_vector(_attraction_scale * scale_attraction_by_dist(attract, rel_pos.dist), dir);
+		const auto attract_vec = Utilities::project_vector(scale_attraction_by_dist(attract, rel_pos.dist), dir);
 		_acceleration.x += attract_vec.x;
 		_acceleration.y += attract_vec.y;
 	}
 
-	const auto dir = Utilities::unit_vector(_acceleration);
-	float accel_mag = Utilities::vector_magnitude(_acceleration);
-	accel_mag = min(accel_mag, _max_acceleration);
-	_acceleration = Utilities::project_vector(accel_mag, dir);
+	for (const auto& dir : zero_dirs)
+	{
+		float dot = Utilities::vector_dot(_acceleration, dir);
+		Vector2 remove = Utilities::project_vector(dot, dir);
+		_acceleration = Utilities::sub_vector(_acceleration, remove);
+	}
 }
 
 void Particle::update_velocity()
@@ -93,7 +102,7 @@ void Particle::update_next_position()
 
 float Particle::scale_attraction_by_dist(float attraction, float distance)
 {
-	return attraction / (distance * 2);
+	return attraction / (distance / 4.0f);
 }
 
 void Particle::step_general()
@@ -112,6 +121,11 @@ void Particle::step_general()
 		}
 		ParticleHandler::remove_particle(this);
 	}
+}
+
+bool Particle::ignore_attraction(const shared_ptr<const Particle>& other, const RelativePosition& rel_pos) const
+{
+	return rel_pos.dist < (other->get_size() + get_size());
 }
 
 bool Particle::is_type(ParticleType type) const

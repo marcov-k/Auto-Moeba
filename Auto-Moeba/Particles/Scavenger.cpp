@@ -33,7 +33,7 @@ float Scavenger::scale_attraction(float attraction, const shared_ptr<const Parti
 {
 	if (other->is_type(ParticleType::Waste))
 	{
-		return can_eat() ? attraction : 0.25f * attraction;
+		return attraction * _hunger_scaling * (1.0f - get_health_percent());
 	}
 	return attraction;
 }

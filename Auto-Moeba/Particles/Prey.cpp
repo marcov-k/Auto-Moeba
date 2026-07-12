@@ -28,13 +28,22 @@ void Prey::collide(const vector<shared_ptr<Particle>>& collisions)
 
 float Prey::scale_attraction(float attraction, const shared_ptr<const Particle>& other, const RelativePosition& rel_pos)
 {
+	if (other->is_type(ParticleType::Food))
+	{
+		return attraction * _hunger_scaling * (1.0f - get_health_percent());
+	}
 	if (other->is_type(ParticleType::Prey))
 	{
 		return rel_pos.dist < _group_dist_mult * (other->get_size() + get_size()) ? -attraction : attraction;
 	}
-	else if (other->is_type(ParticleType::Food))
-	{
-		return can_eat() ? attraction : 0.25f * attraction;
-	}
 	return attraction;
+}
+
+bool Prey::ignore_attraction(const shared_ptr<const Particle>& other, const RelativePosition& rel_pos) const
+{
+	if (other->is_type(ParticleType::Prey))
+	{
+		return rel_pos.dist < _group_dist_mult * (other->get_size() + get_size());
+	}
+	return false;
 }

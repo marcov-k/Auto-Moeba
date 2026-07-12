@@ -37,6 +37,8 @@ protected:
 
 	float scale_attraction(float attraction, const shared_ptr<const Particle>& other, const RelativePosition& rel_pos) override;
 
+	bool ignore_attraction(const shared_ptr<const Particle>& other, const RelativePosition& rel_pos) const override;
+
 private:
 	static inline constexpr float _group_dist_mult = 2.0f;
 	static inline constexpr int _food_to_reproduce = 2;

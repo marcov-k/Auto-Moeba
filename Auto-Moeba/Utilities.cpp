@@ -14,6 +14,11 @@ Vector2 Utilities::add_vector(const Vector2& a, const Vector2& b)
 	return Vector2{ a.x + b.x, a.y + b.y };
 }
 
+Vector2 Utilities::sub_vector(const Vector2& a, const Vector2& b)
+{
+	return Vector2{ a.x - b.x, a.y - b.y };
+}
+
 Vector2 Utilities::unit_vector(const Vector2& v)
 {
 	float mag = hypot(v.x, v.y);
@@ -30,4 +35,9 @@ Vector2 Utilities::project_vector(float val, const Vector2& vec)
 float Utilities::vector_magnitude(const Vector2& v)
 {
 	return hypot(v.x, v.y);
+}
+
+float Utilities::vector_dot(const Vector2& a, const Vector2& b)
+{
+	return a.x * b.x + a.y * b.y;
 }
