@@ -88,14 +88,12 @@ void Particle::update_next_position()
 
 float Particle::scale_attraction_by_dist(float attraction, float distance)
 {
-	return attraction / distance;
+	return attraction / (distance * 2);
 }
 
 void Particle::step_general()
 {
-	if (!_health.has_value()) _health.emplace(get_max_health());
-
-	float& health = _health.value();
+	float& health = get_health();
 	health -= get_health_decay() * GetFrameTime();
 	if (health <= 0.0f)
 	{

@@ -1,9 +1,11 @@
-#include "Prey.h"
+#include "Membrane.h"
 
-void Prey::collide(const vector<shared_ptr<Particle>>& collisions)
+void Membrane::collide(const vector<shared_ptr<Particle>>& collisions)
 {
 	for (auto& particle : collisions)
 	{
+		if (particle.get() == this) continue;
+
 		if (particle->is_type(ParticleType::Predator) && particle->can_eat())
 		{
 			ParticleHandler::remove_particle(this);
@@ -19,18 +21,9 @@ void Prey::collide(const vector<shared_ptr<Particle>>& collisions)
 				_current_food = 0;
 				reproduce(particle->get_position(), this, [](const Vector2& start_pos) -> shared_ptr<Particle>
 					{
-						return make_shared<Prey>(start_pos);
+						return make_shared<Membrane>(start_pos);
 					});
 			}
 		}
 	}
-}
-
-float Prey::scale_attraction(float attraction, const shared_ptr<const Particle>& other, const RelativePosition& rel_pos) const
-{
-	if (other->is_type(ParticleType::Prey))
-	{
-		return rel_pos.dist < _group_dist ? -attraction : attraction;
-	}
-	return attraction;
 }

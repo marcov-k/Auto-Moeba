@@ -56,6 +56,11 @@ public:
 
 	bool is_type(ParticleType type) const;
 
+	bool can_eat()
+	{
+		return get_health() <= get_max_health() * _eat_health_threshold;
+	}
+
 	const unordered_map<ParticleType, float>& get_attractions()
 	{
 		if (_attractions.empty()) generate_type_attractions();
@@ -85,6 +90,7 @@ protected:
 	static inline constexpr float _acceleration_scale = 20.0f;
 	static inline constexpr float _velocity_decay = 0.8f;
 	static inline constexpr float _min_dist_threshold = 4.0f;
+	static inline constexpr float _eat_health_threshold = 0.6f;
 	static inline constexpr float _mutation_range = 5.0f;
 
 	Vector2 _position = { 0.0f, 0.0f };
@@ -105,6 +111,12 @@ protected:
 	virtual float scale_attraction(float attraction, const shared_ptr<const Particle>& other, const RelativePosition& rel_pos) const
 	{
 		return attraction;
+	}
+
+	float& get_health()
+	{
+		if (!_health.has_value()) _health.emplace(get_max_health());
+		return _health.value();
 	}
 
 private:

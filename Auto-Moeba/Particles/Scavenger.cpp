@@ -3,6 +3,8 @@
 
 void Scavenger::collide(const vector<shared_ptr<Particle>>& collisions)
 {
+	if (!can_eat()) return;
+
 	for (auto& particle : collisions)
 	{
 		if (particle->is_type(ParticleType::Waste))
