@@ -87,7 +87,8 @@ protected:
 	static inline constexpr float _effect_radius = 2000.0f;
 	static inline constexpr float _max_acceleration = numeric_limits<float>::max();
 	static inline constexpr float _collision_correction = 0.7f;
-	static inline constexpr float _acceleration_scale = 20.0f;
+	static inline constexpr float _acceleration_scale = 25.0f;
+	static inline constexpr float _velocity_scale = 4.0f;
 	static inline constexpr float _velocity_decay = 0.8f;
 	static inline constexpr float _eat_health_threshold = 0.8f;
 	static inline constexpr float _hunger_scaling = 2.0f;

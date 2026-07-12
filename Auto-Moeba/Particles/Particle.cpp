@@ -96,8 +96,8 @@ void Particle::update_velocity()
 
 void Particle::update_next_position()
 {
-	_next_position.x = _position.x + _velocity.x * GetFrameTime();
-	_next_position.y = _position.y + _velocity.y * GetFrameTime();
+	_next_position.x = _position.x + _velocity.x * _velocity_scale * GetFrameTime();
+	_next_position.y = _position.y + _velocity.y * _velocity_scale * GetFrameTime();
 }
 
 float Particle::scale_attraction_by_dist(float attraction, float distance)
