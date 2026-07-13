@@ -39,3 +39,10 @@ void ParticleHandler::finalize_removes()
 	);
 	removed.clear();
 }
+
+void ParticleHandler::clear_all()
+{
+	particles.clear();
+	added.clear();
+	removed.clear();
+}

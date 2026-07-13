@@ -27,6 +27,11 @@ public:
 		return 0.0f;
 	}
 
+	unsigned short get_id() const override
+	{
+		return id;
+	}
+
 protected:
 	vector<ParticleType> get_types() const override
 	{
@@ -36,5 +41,6 @@ protected:
 	void collide(const vector<shared_ptr<Particle>>& collisions) override;
 
 private:
-	static inline RegisterParticle<Waste> reg{ "Waste" };
+	static inline constexpr unsigned short id = 7;
+	static inline RegisterParticle<Waste> reg{ id, "Waste" };
 };

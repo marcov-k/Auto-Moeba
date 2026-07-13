@@ -1,4 +1,8 @@
 ﻿#include "Auto-Moeba.h"
+#include "SaveSystem/Saver.h"
+#include "Particles.h"
+#include "Button.h"
+#include "ParticleHandler.h"
 #include "raylib.h"
 
 int main()
@@ -17,6 +21,9 @@ int Simulation::selected_particle = 0;
 bool Simulation::paused = true;
 bool Simulation::can_spawn = true;
 float Simulation::spawn_timer = 0.0f;
+float Simulation::warning_timer = Simulation::_warning_time;
+string Simulation::warning_text = "";
+
 
 void Simulation::render_loop(int window_width, int window_height)
 {
@@ -35,6 +42,24 @@ void Simulation::render_loop(int window_width, int window_height)
 		}
 
 		if (IsKeyPressed(KEY_SPACE)) paused = !paused;
+
+		if (IsKeyDown(KEY_LEFT_CONTROL))
+		{
+			if (IsKeyPressed(KEY_S))
+			{
+				if (!Saver::save_state(camera))
+				{
+					show_warning("Failed to save file.");
+				}
+			}
+			else if (IsKeyPressed(KEY_L))
+			{
+				if (!Saver::load_state(camera))
+				{
+					show_warning("File could not be loaded.");
+				}
+			}
+		}
 
 		float current_speed = (_move_speed / camera.zoom) * GetFrameTime();
 
@@ -75,6 +100,7 @@ void Simulation::render_loop(int window_width, int window_height)
 
 		render_buttons();
 		render_ui_text(window_width);
+		render_warning(window_width, window_height);
 
 		EndDrawing();
 
@@ -155,6 +181,24 @@ void Simulation::render_ui_text(int window_width)
 		int text_width = MeasureText(pause_text.c_str(), _ui_font_size);
 		int text_x = window_width - text_width - _ui_text_padding;
 		DrawText(pause_text.c_str(), text_x, _ui_text_padding, _ui_font_size, _ui_font_color);
+	}
+}
+
+void Simulation::show_warning(string warning)
+{
+	warning_text = warning;
+	warning_timer = 0.0f;
+}
+
+void Simulation::render_warning(int window_width, int window_height)
+{
+	if (warning_timer < _warning_time)
+	{
+		warning_timer += GetFrameTime();
+		int text_width = MeasureText(warning_text.c_str(), _ui_font_size);
+		int text_x = (window_width - text_width) / 2;
+		int text_y = (window_height - _ui_font_size) / 2;
+		DrawText(warning_text.c_str(), text_x, text_y, _ui_font_size, _ui_font_color);
 	}
 }
 

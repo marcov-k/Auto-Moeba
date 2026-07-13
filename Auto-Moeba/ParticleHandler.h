@@ -23,4 +23,6 @@ struct ParticleHandler
 	static void finalize_adds();
 
 	static void finalize_removes();
+
+	static void clear_all();
 };

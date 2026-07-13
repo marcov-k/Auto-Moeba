@@ -46,3 +46,13 @@ bool Connector::ignore_attraction(const shared_ptr<const Particle>& other, const
 	}
 	return false;
 }
+
+void Connector::write_unique_data(ofstream& stream) const
+{
+	FileUtils::write_int32(stream, _current_food);
+}
+
+void Connector::read_unique_data(ifstream& stream)
+{
+	_current_food = FileUtils::read_int32(stream);
+}

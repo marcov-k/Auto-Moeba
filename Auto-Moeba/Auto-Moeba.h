@@ -3,13 +3,14 @@
 #include <cmath>
 #include <functional>
 #include <memory>
+#include <string>
 #include <vector>
 
-#include "Particles.h"
-#include "Button.h"
-#include "ParticleHandler.h"
+#include "raylib.h"
 
 using namespace std;
+
+class Button;
 
 struct Simulation
 {
@@ -23,6 +24,7 @@ struct Simulation
 	static inline constexpr int _ui_font_size = 30;
 	static inline constexpr int _ui_text_padding = 25;
 	static inline constexpr Color _ui_font_color = WHITE;
+	static inline constexpr float _warning_time = 1.5f;
 
 	static inline constexpr int _button_font_size = 20;
 	static inline constexpr Color _button_font_color = BLACK;
@@ -37,6 +39,8 @@ struct Simulation
 	static bool paused;
 	static bool can_spawn;
 	static float spawn_timer;
+	static float warning_timer;
+	static string warning_text;
 
 	Simulation() = delete;
 
@@ -49,6 +53,10 @@ struct Simulation
 	static void render_buttons();
 
 	static void render_ui_text(int window_width);
+
+	static void show_warning(string warning_text);
+
+	static void render_warning(int window_width, int window_height);
 
 	static bool any_button_hovered();
 

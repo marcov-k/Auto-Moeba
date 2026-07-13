@@ -37,3 +37,13 @@ float Scavenger::scale_attraction(float attraction, const shared_ptr<const Parti
 	}
 	return attraction;
 }
+
+void Scavenger::write_unique_data(ofstream& stream) const
+{
+	FileUtils::write_int32(stream, _current_waste);
+}
+
+void Scavenger::read_unique_data(ifstream& stream)
+{
+	_current_waste = FileUtils::read_int32(stream);
+}

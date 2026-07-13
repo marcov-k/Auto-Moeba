@@ -174,3 +174,50 @@ void Particle::generate_child_attractions(const unordered_map<ParticleType, floa
 		_attractions[attraction.first] = attraction.second + Utilities::generate_random(-_mutation_range, _mutation_range);
 	}
 }
+
+void Particle::write_particle(ofstream& stream, unsigned short id)
+{
+	FileUtils::write_uint16(stream, id);
+	FileUtils::write_vector2(stream, _position);
+
+	FileUtils::write_size_t(stream, get_attractions().size());
+	for (const auto& attraction : get_attractions())
+	{
+		FileUtils::write_int32(stream, static_cast<int>(attraction.first));
+		FileUtils::write_float(stream, attraction.second);
+	}
+
+	FileUtils::write_float(stream, get_health());
+	write_unique_data(stream);
+}
+
+auto Particle::get_factory(unsigned short id)
+{
+	for (const auto& reg : get_registry())
+	{
+		if (reg.id == id)
+		{
+			return reg.create;
+		}
+	}
+	throw invalid_argument("Particle ID not registered.");
+}
+
+void Particle::create_from_data(ifstream& stream)
+{
+	auto id = FileUtils::read_uint16(stream);
+	auto pos = FileUtils::read_vector2(stream);
+	auto particle = get_factory(id)(pos);
+
+	size_t attraction_count = FileUtils::read_size_t(stream);
+	for (size_t i = 0; i < attraction_count; ++i)
+	{
+		int type = FileUtils::read_int32(stream);
+		float attraction = FileUtils::read_float(stream);
+		particle->_attractions[static_cast<ParticleType>(type)] = attraction;
+	}
+
+	particle->get_health() = FileUtils::read_float(stream);
+	particle->read_unique_data(stream);
+	ParticleHandler::add_particle(particle);
+}

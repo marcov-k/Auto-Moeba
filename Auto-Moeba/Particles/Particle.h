@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cmath>
+#include <fstream>
 #include <functional>
 #include <iostream>
 #include <limits>
@@ -15,6 +16,7 @@
 #include "../Utilities.h"
 #include "TypeAttractions.h"
 #include "../ParticleHandler.h"
+#include "../SaveSystem/FileUtils.h"
 
 using namespace std;
 
@@ -31,6 +33,7 @@ public:
 
 	struct RegistryEntry
 	{
+		unsigned short id;
 		string type_name;
 		Factory create;
 	};
@@ -53,6 +56,8 @@ public:
 	virtual float get_max_health() const = 0;
 
 	virtual float get_health_decay() const = 0;
+
+	virtual unsigned short get_id() const = 0;
 
 	bool is_type(ParticleType type) const;
 
@@ -87,6 +92,12 @@ public:
 			get_health() = get_max_health();
 		}
 	}
+
+	void write_particle(ofstream& stream, unsigned short id);
+
+	static void create_from_data(ifstream& stream);
+
+	static auto get_factory(unsigned short id);
 
 protected:
 	static inline constexpr float _effect_radius = 2000.0f;
@@ -133,6 +144,10 @@ protected:
 		return get_health() / get_max_health();
 	}
 
+	virtual void write_unique_data(ofstream& stream) const {}
+
+	virtual void read_unique_data(ifstream& stream) {}
+
 private:
 	unordered_map<ParticleType, float> _attractions;
 
@@ -155,11 +170,11 @@ template <typename T>
 class RegisterParticle
 {
 public:
-	RegisterParticle(string name)
+	RegisterParticle(unsigned short id, string name)
 	{
 		Particle::get_registry().push_back(
 		{
-			name,
+			id, name,
 			[](const Vector2& start_position) -> shared_ptr<Particle>
 			{
 				return make_shared<T>(start_position);

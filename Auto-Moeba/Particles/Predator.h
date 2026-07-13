@@ -27,6 +27,11 @@ public:
 		return 2.0f;
 	}
 
+	unsigned short get_id() const override
+	{
+		return id;
+	}
+
 protected:
 	vector<ParticleType> get_types() const override
 	{
@@ -37,9 +42,14 @@ protected:
 
 	float scale_attraction(float attraction, const shared_ptr<const Particle>& other, const RelativePosition& rel_pos) override;
 
+	void write_unique_data(ofstream& stream) const override;
+
+	void read_unique_data(ifstream& stream) override;
+
 private:
 	static inline constexpr int _prey_to_reproduce = 4;
 	int _current_prey = 0;
 
-	static inline RegisterParticle<Predator> reg{ "Predator" };
+	static inline constexpr unsigned short id = 0;
+	static inline RegisterParticle<Predator> reg{ id, "Predator" };
 };

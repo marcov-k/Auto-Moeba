@@ -38,3 +38,13 @@ float Predator::scale_attraction(float attraction, const shared_ptr<const Partic
 	}
 	return attraction;
 }
+
+void Predator::write_unique_data(ofstream& stream) const
+{
+	FileUtils::write_int32(stream, _current_prey);
+}
+
+void Predator::read_unique_data(ifstream& stream)
+{
+	_current_prey = FileUtils::read_int32(stream);
+}

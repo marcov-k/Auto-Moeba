@@ -27,6 +27,11 @@ public:
 		return 0.0f;
 	}
 
+	unsigned short get_id() const override
+	{
+		return id;
+	}
+
 protected:
 	vector<ParticleType> get_types() const override
 	{
@@ -35,9 +40,14 @@ protected:
 
 	void step_specific(const vector<shared_ptr<Particle>>& particles) override;
 
+	void write_unique_data(ofstream& stream) const override;
+
+	void read_unique_data(ifstream& stream) override;
+
 private:
 	static inline constexpr float _growth_time = 10.0f;
 	float _current_growth = 0.0f;
 
-	static inline RegisterParticle<Nutrients> reg{ "Nutrients" };
+	static inline constexpr unsigned short id = 8;
+	static inline RegisterParticle<Nutrients> reg{ id, "Nutrients" };
 };

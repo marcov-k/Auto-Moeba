@@ -10,3 +10,13 @@ void Nutrients::step_specific(const vector<shared_ptr<Particle>>& particles)
 		ParticleHandler::remove_particle(this);
 	}
 }
+
+void Nutrients::write_unique_data(ofstream& stream) const
+{
+	FileUtils::write_float(stream, _current_growth);
+}
+
+void Nutrients::read_unique_data(ifstream& stream)
+{
+	_current_growth = FileUtils::read_float(stream);
+}

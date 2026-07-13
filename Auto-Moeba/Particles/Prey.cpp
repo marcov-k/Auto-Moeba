@@ -47,3 +47,13 @@ bool Prey::ignore_attraction(const shared_ptr<const Particle>& other, const Rela
 	}
 	return false;
 }
+
+void Prey::write_unique_data(ofstream& stream) const
+{
+	FileUtils::write_int32(stream, _current_food);
+}
+
+void Prey::read_unique_data(ifstream& stream)
+{
+	_current_food = FileUtils::read_int32(stream);
+}
