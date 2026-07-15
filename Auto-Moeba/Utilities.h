@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <cmath>
+#include <numbers>
 #include <random>
 
 #include "raylib.h"
@@ -42,4 +43,6 @@ public:
 		uniform_real_distribution<float> dis(min, max);
 		return dis(gen);
 	}
+
+	static float exp_function(float x, float coeff);
 };

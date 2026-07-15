@@ -32,7 +32,7 @@ float Membrane::scale_attraction(float attraction, const shared_ptr<const Partic
 {
 	if (other->is_type(ParticleType::Food))
 	{
-		return attraction * _hunger_scaling * (1.0f - get_health_percent());
+		return attraction * Utilities::exp_function(1.0f - get_health_percent(), _hunger_scaling);
 	}
 	if (other->is_type(ParticleType::Membrane) || other->is_type(ParticleType::Nucleus))
 	{

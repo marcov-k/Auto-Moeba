@@ -29,7 +29,7 @@ float Connector::scale_attraction(float attraction, const shared_ptr<const Parti
 {
 	if (other->is_type(ParticleType::Food))
 	{
-		return attraction * _hunger_scaling * (1.0f - get_health_percent());
+		return attraction * Utilities::exp_function(1.0f - get_health_percent(), _hunger_scaling);
 	}
 	else if (!other->is_type(ParticleType::Waste))
 	{

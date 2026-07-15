@@ -132,8 +132,8 @@ struct TypeAttractions
 			{ ParticleType::Predator, 10.0f },
 			{ ParticleType::Prey, 0.0f },
 			{ ParticleType::Scavenger, 0.0f },
-			{ ParticleType::Membrane, 200.0f },
-			{ ParticleType::Nucleus, 300.0f },
+			{ ParticleType::Membrane, 50.0f },
+			{ ParticleType::Nucleus, 100.0f },
 			{ ParticleType::Connector, 5.0f },
 			{ ParticleType::Food, 0.0f },
 			{ ParticleType::Waste, 0.0f }

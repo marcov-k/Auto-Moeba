@@ -107,13 +107,13 @@ protected:
 	static inline constexpr float _velocity_scale = 4.0f;
 	static inline constexpr float _velocity_decay = 0.8f;
 	static inline constexpr float _eat_health_threshold = 0.8f;
-	static inline constexpr float _hunger_scaling = 2.0f;
+	static inline constexpr float _hunger_scaling = 4.0f;
 	static inline constexpr float _mutation_range = 5.0f;
 
-	Vector2 _position = { 0.0f, 0.0f };
-	Vector2 _next_position = { 0.0f, 0.0f };
-	Vector2 _velocity = { 0.0f, 0.0f };
-	Vector2 _acceleration = { 0.0f, 0.0f };
+	Vector2 _position{ 0.0f, 0.0f };
+	Vector2 _next_position{ 0.0f, 0.0f };
+	Vector2 _velocity{ 0.0f, 0.0f };
+	Vector2 _acceleration{ 0.0f, 0.0f };
 	optional<float> _health;
 	bool _ate = false;
 

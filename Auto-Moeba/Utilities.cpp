@@ -41,3 +41,9 @@ float Utilities::vector_dot(const Vector2& a, const Vector2& b)
 {
 	return a.x * b.x + a.y * b.y;
 }
+
+float Utilities::exp_function(float x, float coeff)
+{
+	static float e_minus_one = numbers::e - 1.0f;
+	return coeff * ((exp(x) - 1.0f) / e_minus_one);
+}

@@ -34,7 +34,7 @@ float Predator::scale_attraction(float attraction, const shared_ptr<const Partic
 {
 	if (other->is_type(ParticleType::Prey) || other->is_type(ParticleType::Membrane) || other->is_type(ParticleType::Nucleus))
 	{
-		return attraction * _hunger_scaling * (1.0f - get_health_percent());
+		return attraction * Utilities::exp_function(1.0f - get_health_percent(), _hunger_scaling);
 	}
 	return attraction;
 }
