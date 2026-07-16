@@ -22,7 +22,7 @@ Vector2 Utilities::sub_vector(const Vector2& a, const Vector2& b)
 Vector2 Utilities::unit_vector(const Vector2& v)
 {
 	float mag = hypot(v.x, v.y);
-	return mag < 1e-4f ? Vector2{ 0.0f, 0.0f } : Vector2{v.x / mag, v.y / mag};
+	return mag < 1e-12f ? Vector2{ 0.0f, 0.0f } : Vector2{v.x / mag, v.y / mag};
 }
 
 Vector2 Utilities::project_vector(float val, const Vector2& vec)

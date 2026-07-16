@@ -44,7 +44,7 @@ bool Connector::ignore_attraction(const shared_ptr<const Particle>& other, const
 	{
 		return rel_pos.dist < _min_dist_mult * (other->get_size() + get_size());
 	}
-	return false;
+	return rel_pos.dist < (other->get_size() + get_size());
 }
 
 void Connector::write_unique_data(ofstream& stream) const
