@@ -1,9 +1,11 @@
-﻿#include "Auto-Moeba.h"
+﻿#include <format>
+#include <omp.h>
+
+#include "Auto-Moeba.h"
 #include "SaveSystem/Saver.h"
 #include "Particles.h"
 #include "Button.h"
 #include "ParticleHandler.h"
-#include <omp.h>
 
 int main()
 {
@@ -177,8 +179,11 @@ void Simulation::render_buttons()
 
 void Simulation::render_ui_text(int window_width)
 {
+	string count = format("Total Particles: {}", ParticleHandler::particles.size());
+	DrawText(count.c_str(), _ui_text_padding, _ui_text_padding, _ui_font_size, _ui_font_color);
+
 	string particle = "Selected: " + Particle::get_registry()[selected_particle].type_name;
-	DrawText(particle.c_str(), _ui_text_padding, _ui_text_padding, _ui_font_size, _ui_font_color);
+	DrawText(particle.c_str(), _ui_text_padding, 2.0f * _ui_text_padding + _ui_font_size, _ui_font_size, _ui_font_color);
 
 	if (paused)
 	{
