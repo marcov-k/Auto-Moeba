@@ -21,6 +21,7 @@ int main()
 vector<Button> Simulation::particle_buttons;
 int Simulation::selected_particle = 0;
 bool Simulation::paused = true;
+bool Simulation::controls_open = false;
 bool Simulation::can_spawn = true;
 float Simulation::spawn_timer = 0.0f;
 float Simulation::warning_timer = Simulation::_warning_time;
@@ -44,6 +45,8 @@ void Simulation::render_loop(int window_width, int window_height)
 		}
 
 		if (IsKeyPressed(KEY_SPACE)) paused = !paused;
+
+		if (IsKeyPressed(KEY_F1)) controls_open = !controls_open;
 
 		if (IsKeyDown(KEY_LEFT_CONTROL))
 		{
@@ -102,11 +105,12 @@ void Simulation::render_loop(int window_width, int window_height)
 
 		render_buttons();
 		render_ui_text(window_width);
+		if (controls_open) render_controls(window_width, window_height);
 		render_warning(window_width, window_height);
 
 		EndDrawing();
 
-		if (!paused)
+		if (can_simulate())
 		{
 			simulation_step();
 		}
@@ -180,17 +184,53 @@ void Simulation::render_buttons()
 void Simulation::render_ui_text(int window_width)
 {
 	string count = format("Total Particles: {}", ParticleHandler::particles.size());
-	DrawText(count.c_str(), _ui_text_padding, _ui_text_padding, _ui_font_size, _ui_font_color);
+	int text_x = _ui_text_padding;
+	int text_y = _ui_text_padding;
+	DrawText(count.c_str(), text_x, text_y, _ui_font_size, _ui_font_color);
 
 	string particle = "Selected: " + Particle::get_registry()[selected_particle].type_name;
-	DrawText(particle.c_str(), _ui_text_padding, 2.0f * _ui_text_padding + _ui_font_size, _ui_font_size, _ui_font_color);
+	text_x = _ui_text_padding;
+	text_y += _ui_font_size + _ui_text_padding;
+	DrawText(particle.c_str(), text_x, text_y, _ui_font_size, _ui_font_color);
+
+	string help = "F1 - Help";
+	int text_width = MeasureText(help.c_str(), _ui_font_size);
+	text_x = window_width - text_width - _ui_text_padding;
+	text_y = _ui_text_padding;
+	DrawText(help.c_str(), text_x, text_y, _ui_font_size, _ui_font_color);
 
 	if (paused)
 	{
-		string pause_text = "Paused";
-		int text_width = MeasureText(pause_text.c_str(), _ui_font_size);
-		int text_x = window_width - text_width - _ui_text_padding;
-		DrawText(pause_text.c_str(), text_x, _ui_text_padding, _ui_font_size, _ui_font_color);
+		string pause = "Paused";
+		text_width = MeasureText(pause.c_str(), _ui_font_size);
+		text_x = window_width - text_width - _ui_text_padding;
+		text_y += _ui_font_size + _ui_text_padding;
+		DrawText(pause.c_str(), text_x, text_y, _ui_font_size, _ui_font_color);
+	}
+}
+
+void Simulation::render_controls(int window_width, int window_height)
+{
+	int max_width = 0;
+	for (auto& control : controls)
+	{
+		max_width = max(max_width, MeasureText(control.c_str(), _ui_font_size));
+	}
+	max_width += 2 * _ui_text_padding;
+
+	float total_text_height = (float)controls.size() * (_ui_font_size + _ui_text_padding) + _ui_text_padding;
+	float background_x = (window_width - max_width) / 2.0f;
+	float background_y = (window_height - total_text_height) / 2.0f;
+	Rectangle background{ background_x, background_y, (float)max_width, total_text_height };
+	DrawRectangleRounded(background, _controls_background_roundness, _background_segments, _controls_background_color);
+
+	int text_x;
+	int text_y = (int)background_y + _ui_text_padding;
+	for (auto& control : controls)
+	{
+		text_x = (window_width - MeasureText(control.c_str(), _ui_font_size)) / 2;
+		DrawText(control.c_str(), text_x, text_y, _ui_font_size, _ui_font_color);
+		text_y += _ui_font_size + _ui_text_padding;
 	}
 }
 
@@ -208,6 +248,11 @@ void Simulation::render_warning(int window_width, int window_height)
 		int text_width = MeasureText(warning_text.c_str(), _ui_font_size);
 		int text_x = (window_width - text_width) / 2;
 		int text_y = (window_height - _ui_font_size) / 2;
+
+		Rectangle background{ (float)text_x - _ui_text_padding, (float)text_y - _ui_text_padding,
+			text_width + 2.0f * _ui_text_padding, _ui_font_size + 2.0f * _ui_text_padding };
+		DrawRectangleRounded(background, _warning_background_roundness, _background_segments, _warning_background_color);
+
 		DrawText(warning_text.c_str(), text_x, text_y, _ui_font_size, _ui_font_color);
 	}
 }
@@ -233,7 +278,7 @@ bool Simulation::any_particle_hovered(Camera2D& camera)
 
 void Simulation::check_spawns(Camera2D& camera)
 {
-	if (IsMouseButtonDown(MOUSE_LEFT_BUTTON) && !any_button_hovered() && !any_particle_hovered(camera))
+	if (IsMouseButtonDown(MOUSE_LEFT_BUTTON) && !any_button_hovered() && !any_particle_hovered(camera) && !controls_open)
 	{
 		if (can_spawn)
 		{
@@ -248,7 +293,7 @@ void Simulation::check_spawns(Camera2D& camera)
 			spawn_timer = 0.0f;
 		}
 	}
-	else if (!IsMouseButtonDown(MOUSE_LEFT_BUTTON))
+	else if (!IsMouseButtonDown(MOUSE_LEFT_BUTTON) || controls_open)
 	{
 		can_spawn = true;
 		spawn_timer = 0.0f;
