@@ -1,3 +1,5 @@
+#include <omp.h>
+
 #include "ParticleHandler.h"
 #include "Particles/Particle.h"
 
@@ -7,12 +9,21 @@ unordered_set<Particle*> ParticleHandler::removed;
 
 void ParticleHandler::add_particle(shared_ptr<Particle> particle)
 {
-	added.push_back(particle);
+	#pragma warning(disable : 6993)
+	#pragma omp critical(particle_added_lock)
+	{
+		particle->init_health();
+		particle->generate_type_attractions();
+		added.push_back(particle);
+	}
 }
 
 void ParticleHandler::remove_particle(Particle* particle)
 {
-	removed.insert(particle);
+	#pragma omp critical(particle_removed_lock)
+	{
+		removed.insert(particle);
+	}
 }
 
 void ParticleHandler::finalize_adds()

@@ -44,6 +44,6 @@ float Utilities::vector_dot(const Vector2& a, const Vector2& b)
 
 float Utilities::exp_function(float x, float coeff)
 {
-	static float e_minus_one = numbers::e - 1.0f;
+	static float e_minus_one = (float)numbers::e - 1.0f;
 	return coeff * ((exp(x) - 1.0f) / e_minus_one);
 }

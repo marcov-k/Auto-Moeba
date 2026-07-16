@@ -3,7 +3,7 @@
 #include "Particles.h"
 #include "Button.h"
 #include "ParticleHandler.h"
-#include "raylib.h"
+#include <omp.h>
 
 int main()
 {
@@ -114,28 +114,33 @@ void Simulation::render_loop(int window_width, int window_height)
 
 void Simulation::simulation_step()
 {
-	// Can be made parallel
-	for (auto& particle : ParticleHandler::particles)
+	auto& particles = ParticleHandler::particles;
+	size_t particle_count = particles.size();
+	bool use_parallel = particle_count > _parallel_threshold;
+
+	#pragma warning(disable: 6993)
+	#pragma omp parallel for if(use_parallel)
+	for (size_t i = 0; i < particle_count; ++i)
 	{
-		particle->step(ParticleHandler::particles);
+		particles[i]->step(particles);
 	}
 
-	// Can be made parallel
-	for (auto& particle : ParticleHandler::particles)
+	#pragma omp parallel for if(use_parallel)
+	for (size_t i = 0; i < particle_count; ++i)
 	{
-		particle->update_position();
+		particles[i]->update_position();
 	}
 
-	// Can be made parallel
-	for (auto& particle : ParticleHandler::particles)
+	#pragma omp parallel for if(use_parallel)
+	for (size_t i = 0; i < particle_count; ++i)
 	{
-		particle->check_collisions(ParticleHandler::particles);
+		particles[i]->check_collisions(particles);
 	}
 
-	// Can be made parallel
-	for (auto& particle : ParticleHandler::particles)
+	#pragma omp parallel for if(use_parallel)
+	for (size_t i = 0; i < particle_count; ++i)
 	{
-		particle->update_position();
+		particles[i]->update_position();
 	}
 
 	ParticleHandler::finalize_adds();

@@ -15,6 +15,7 @@ class Button;
 struct Simulation
 {
 	static inline constexpr int _target_fps = 120;
+	static inline constexpr size_t _parallel_threshold = 1'000; // number of particles to parallelize at
 
 	static inline constexpr float _spawn_interval = 0.02f;
 

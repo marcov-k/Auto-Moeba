@@ -68,7 +68,6 @@ public:
 
 	const unordered_map<ParticleType, float>& get_attractions()
 	{
-		if (_attractions.empty()) generate_type_attractions();
 		return _attractions;
 	}
 
@@ -98,6 +97,13 @@ public:
 	static void create_from_data(ifstream& stream);
 
 	static auto get_factory(unsigned short id);
+
+	void generate_type_attractions();
+
+	void init_health()
+	{
+		if (!_health.has_value()) _health.emplace(get_max_health());
+	}
 
 protected:
 	static inline constexpr float _effect_radius = 2000.0f;
@@ -135,7 +141,6 @@ protected:
 
 	float& get_health()
 	{
-		if (!_health.has_value()) _health.emplace(get_max_health());
 		return _health.value();
 	}
 
@@ -150,8 +155,6 @@ protected:
 
 private:
 	unordered_map<ParticleType, float> _attractions;
-
-	void generate_type_attractions();
 
 	void generate_child_attractions(const unordered_map<ParticleType, float>& parent_attractions);
 

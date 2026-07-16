@@ -140,6 +140,8 @@ bool Particle::is_type(ParticleType type) const
 
 void Particle::generate_type_attractions()
 {
+	if (!_attractions.empty()) return;
+
 	const int type_count = static_cast<int>(ParticleType::End);
 
 	if (get_types().size() < 1)
