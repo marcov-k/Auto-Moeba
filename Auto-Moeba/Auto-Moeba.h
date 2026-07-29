@@ -60,6 +60,7 @@ struct Simulation
 	static bool can_spawn;
 	static float spawn_timer;
 	static float warning_timer;
+	static int warning_skip_frames;
 	static string warning_text;
 
 	Simulation() = delete;

@@ -219,6 +219,7 @@ void Particle::create_from_data(ifstream& stream)
 		particle->_attractions[static_cast<ParticleType>(type)] = attraction;
 	}
 
+	particle->init_health();
 	particle->get_health() = FileUtils::read_float(stream);
 	particle->read_unique_data(stream);
 	ParticleHandler::add_particle(particle);
