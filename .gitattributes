@@ -1,0 +1,25 @@
+# Normalize all text files to LF on checkout, commit as LF
+* text=auto eol=lf
+
+# Force specific source files to use standard line endings
+*.c text
+*.cpp text
+*.h text
+*.hpp text
+*.cmake text
+CMakeLists.txt text
+
+# Keep Windows-specific files using CRLF if needed
+*.bat text eol=crlf
+*.cmd text eol=crlf
+
+# Ensure binary files are not corrupted by Git line-ending conversion
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.lib binary
+*.a binary
+*.dll binary
+*.so binary
