@@ -25,6 +25,7 @@ bool Simulation::controls_open = false;
 bool Simulation::can_spawn = true;
 float Simulation::spawn_timer = 0.0f;
 float Simulation::warning_timer = Simulation::_warning_time;
+int Simulation::warning_skip_frames = 0;
 string Simulation::warning_text = "";
 
 
@@ -252,12 +253,19 @@ void Simulation::show_warning(string warning)
 {
 	warning_text = warning;
 	warning_timer = 0.0f;
+	warning_skip_frames = 0;
 }
 
 void Simulation::render_warning(int window_width, int window_height)
 {
 	if (warning_timer < _warning_time)
 	{
+		if (warning_skip_frames < 2)
+		{
+			++warning_skip_frames;
+			return;
+		}
+
 		warning_timer += GetFrameTime();
 		int text_width = MeasureText(warning_text.c_str(), _ui_font_size);
 		int text_x = (window_width - text_width) / 2;

@@ -7,7 +7,7 @@
 #include "../ParticleHandler.h"
 #include "raylib.h"
 
-void Saver::save_state(Camera2D& camera)
+void Saver::save_state(const Camera2D& camera)
 {
 	auto init_dir = get_initial_directory();
 	auto file_path = prompt_file(ExplorerMode::Save, L"NewAutoMoebaSave", init_dir);
@@ -18,6 +18,7 @@ void Saver::save_state(Camera2D& camera)
 
 	FileUtils::write_int32(stream, magic_number);
 	FileUtils::write_vector2(stream, camera.target);
+	FileUtils::write_float(stream, camera.zoom);
 	FileUtils::write_size_t(stream, ParticleHandler::particles.size());
 	for (auto& particle : ParticleHandler::particles)
 	{
@@ -40,6 +41,7 @@ void Saver::load_state(Camera2D& camera)
 	if (magic != magic_number) throw InvalidFileException("Invalid file type opened.");
 
 	camera.target = FileUtils::read_vector2(stream);
+	camera.zoom = FileUtils::read_float(stream);
 
 	ParticleHandler::clear_all();
 
