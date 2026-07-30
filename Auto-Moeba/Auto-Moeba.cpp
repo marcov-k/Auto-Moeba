@@ -52,16 +52,30 @@ void Simulation::render_loop(int window_width, int window_height)
 		{
 			if (IsKeyPressed(KEY_S))
 			{
-				if (!Saver::save_state(camera))
+				try
 				{
-					show_warning("Failed to save file.");
+					Saver::save_state(camera);
+				}
+				catch (const NoSaveFileException& e) {}
+				catch (const FileOpenFailedException& e)
+				{
+					show_warning("Could not open the file.");
 				}
 			}
 			else if (IsKeyPressed(KEY_L))
 			{
-				if (!Saver::load_state(camera))
+				try
 				{
-					show_warning("File could not be loaded.");
+					Saver::load_state(camera);
+				}
+				catch (const NoSaveFileException& e) {}
+				catch (const FileOpenFailedException& e)
+				{
+					show_warning("Could not open the file.");
+				}
+				catch (const InvalidFileException& e)
+				{
+					show_warning("Selected file is not a valid save file.");
 				}
 			}
 		}

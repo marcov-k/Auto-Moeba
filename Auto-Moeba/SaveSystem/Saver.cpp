@@ -4,17 +4,17 @@
 #include <filesystem>
 #include <fstream>
 
-#include "FileUtils.h"
 #include "../ParticleHandler.h"
 #include "raylib.h"
 
-bool Saver::save_state(Camera2D& camera)
+void Saver::save_state(Camera2D& camera)
 {
 	auto init_dir = get_initial_directory();
 	auto file_path = prompt_file(ExplorerMode::Save, L"NewAutoMoebaSave", init_dir);
+	if (file_path == L"") throw NoSaveFileException("No save file was selected.");
 
 	std::ofstream stream(file_path);
-	if (!stream.is_open()) return false;
+	if (!stream.is_open()) throw FileOpenFailedException("Failed to open save file.");
 
 	FileUtils::write_int32(stream, magic_number);
 	FileUtils::write_vector2(stream, camera.target);
@@ -25,19 +25,19 @@ bool Saver::save_state(Camera2D& camera)
 	}
 
 	stream.close();
-	return true;
 }
 
-bool Saver::load_state(Camera2D& camera)
+void Saver::load_state(Camera2D& camera)
 {
 	auto init_dir = get_initial_directory();
 	auto file_path = prompt_file(ExplorerMode::Open, L"", init_dir);
+	if (file_path == L"") throw NoSaveFileException("No save file was selected.");
 
 	std::ifstream stream(file_path);
-	if (!stream.is_open()) return false;
+	if (!stream.is_open()) throw FileOpenFailedException("Failed to open save file.");
 
 	int magic = FileUtils::read_int32(stream);
-	if (magic != magic_number) return false;
+	if (magic != magic_number) throw InvalidFileException("Invalid file type opened.");
 
 	camera.target = FileUtils::read_vector2(stream);
 
@@ -50,7 +50,6 @@ bool Saver::load_state(Camera2D& camera)
 	}
 
 	stream.close();
-	return true;
 }
 
 std::wstring Saver::get_initial_directory()

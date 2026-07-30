@@ -1,17 +1,39 @@
 #pragma once
 
+#include <stdexcept>
 #include <string>
 
 struct Camera2D;
+
+class NoSaveFileException : public std::runtime_error
+{
+public:
+	explicit NoSaveFileException(const std::string& msg)
+		: std::runtime_error(msg) {}
+};
+
+class FileOpenFailedException : public std::runtime_error
+{
+public:
+	explicit FileOpenFailedException(const std::string& msg)
+		: std::runtime_error(msg) {}
+};
+
+class InvalidFileException : public std::runtime_error
+{
+public:
+	explicit InvalidFileException(const std::string& msg)
+		: std::runtime_error(msg) {}
+};
 
 class Saver
 {
 public:
 	Saver() = delete;
 
-	static bool save_state(Camera2D& camera);
+	static void save_state(Camera2D& camera);
 
-	static bool load_state(Camera2D& camera);
+	static void load_state(Camera2D& camera);
 
 private:
 	static inline constexpr int magic_number = 1094996045; // spells "MEBA" in ASCII
