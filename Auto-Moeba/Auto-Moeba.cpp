@@ -65,6 +65,7 @@ void Simulation::render_loop(int window_width, int window_height)
 			}
 			else if (IsKeyPressed(KEY_L))
 			{
+				paused = true;
 				try
 				{
 					Saver::load_state(camera);
