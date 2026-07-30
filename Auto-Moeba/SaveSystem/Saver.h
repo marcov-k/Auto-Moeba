@@ -31,8 +31,7 @@ class Saver
 public:
 	Saver() = delete;
 
-	static bool save_state(const Camera2D& camera);
-	static void save_state(Camera2D& camera);
+	static void save_state(const Camera2D& camera);
 
 	static void load_state(Camera2D& camera);
 
