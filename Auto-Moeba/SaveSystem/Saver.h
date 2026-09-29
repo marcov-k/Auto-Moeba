@@ -47,7 +47,7 @@ private:
 
 	static std::wstring get_initial_directory();
 
-	static std::wstring get_executable_directory();
+	static std::wstring get_app_data_directory();
 
 	static std::wstring prompt_file(ExplorerMode mode, const std::wstring& default_file_name = L"",
 		const std::wstring& initial_directory = L"");

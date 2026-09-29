@@ -56,7 +56,7 @@ void Saver::load_state(Camera2D& camera)
 
 std::wstring Saver::get_initial_directory()
 {
-	auto init_dir = get_executable_directory() + directory_name;
+	auto init_dir = get_app_data_directory() + directory_name;
 	if (!std::filesystem::exists(init_dir))
 	{
 		std::filesystem::create_directories(init_dir);
