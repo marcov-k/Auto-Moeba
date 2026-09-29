@@ -39,11 +39,13 @@ jobs:
 
       - name: Configure CMake
         run: |
-          cmake --presets-file $env:GITHUB_WORKSPACE\Auto-Moeba\CMakePresets.json
+          cd "$env:GITHUB_WORKSPACE\Auto-Moeba"
           cmake --preset x64-release
 
       - name: Build application
-        run: cmake --build --preset x64-release
+        run: |
+          cd "$env:GITHUB_WORKSPACE\Auto-Moeba"
+          cmake --build --preset x64-release
 
       - name: Locate build outputs
         id: files
