@@ -74,6 +74,6 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           tag-name: ${{ github.ref_name }}
-          files: installer/output/Auto-Moeba.exe
+          files: installer/output/Auto-Moeba-${{ github.ref_name}}.exe
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
