@@ -25,8 +25,8 @@ bool Simulation::controls_open = false;
 bool Simulation::can_spawn = true;
 float Simulation::spawn_timer = 0.0f;
 float Simulation::warning_timer = Simulation::_warning_time;
-int Simulation::warning_skip_frames = 0;
 string Simulation::warning_text = "";
+int Simulation::frames_since_menu_opened = 2; // initialize to 2 to prevent frames from being skipped initially
 
 
 void Simulation::render_loop(int window_width, int window_height)
@@ -53,19 +53,42 @@ void Simulation::render_loop(int window_width, int window_height)
 		{
 			if (IsKeyPressed(KEY_S))
 			{
-				if (!Saver::save_state(camera))
+				frames_since_menu_opened = 0;
+				try
 				{
-					show_warning("Failed to save file.");
+					Saver::save_state(camera);
+				}
+				catch (const NoSaveFileException& e) {} // user did not select any file to save to - safely ignored
+				catch (const FileOpenFailedException& e)
+				{
+					show_warning("Could not open the file.");
 				}
 			}
 			else if (IsKeyPressed(KEY_L))
 			{
+				frames_since_menu_opened = 0;
 				paused = true;
-				if (!Saver::load_state(camera))
+				try
 				{
-					show_warning("File could not be loaded.");
+					Saver::load_state(camera);
+				}
+				catch (const NoSaveFileException& e) {} // user did not select any file to load from - safely ignored
+				catch (const FileOpenFailedException& e)
+				{
+					show_warning("Could not open the file.");
+				}
+				catch (const InvalidFileException& e)
+				{
+					show_warning("Selected file is not a valid save file.");
 				}
 			}
+		}
+
+		if (frames_since_menu_opened < 2)
+		{
+			++frames_since_menu_opened;
+			EndDrawing();
+			continue;
 		}
 
 		float current_speed = (_move_speed / camera.zoom) * GetFrameTime();
@@ -240,19 +263,12 @@ void Simulation::show_warning(string warning)
 {
 	warning_text = warning;
 	warning_timer = 0.0f;
-	warning_skip_frames = 0;
 }
 
 void Simulation::render_warning(int window_width, int window_height)
 {
 	if (warning_timer < _warning_time)
 	{
-		if (warning_skip_frames < 2)
-		{
-			++warning_skip_frames;
-			return;
-		}
-
 		warning_timer += GetFrameTime();
 		int text_width = MeasureText(warning_text.c_str(), _ui_font_size);
 		int text_x = (window_width - text_width) / 2;
