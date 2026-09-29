@@ -38,7 +38,9 @@ jobs:
           arch: x64
 
       - name: Configure CMake
-        run: cmake --preset x64-release
+        run: |
+          cmake --presets-file $env:GITHUB_WORKSPACE\Auto-Moeba\CMakePresets.json
+          cmake --preset x64-release
 
       - name: Build application
         run: cmake --build --preset x64-release
