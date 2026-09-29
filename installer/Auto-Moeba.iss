@@ -32,7 +32,7 @@ Source: "{#BuildDir}\*"; DestDir: "{app}"; Flags: recursesubdirs createallsubdir
 
 [Icons]
 Name: "{autoprograms}\{#AppName}"; Filename: "{app}\{#ExecutableName}"; WorkingDir: "{app}"
-Name: "{autodesktop\{#AppName}"; Filename: "{app}\{#ExecutableName}"; WorkingDir: "{app}"
+Name: "{autodesktop}\{#AppName}"; Filename: "{app}\{#ExecutableName}"; WorkingDir: "{app}"
 
 [Run]
 Filename: "{app}\{#ExecutableName}"; WorkingDir: "{app}"; Description: "Launch {#AppName}"; Flags: nowait postinstall skipifsilent
