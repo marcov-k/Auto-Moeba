@@ -51,7 +51,7 @@ jobs:
         id: files
         shell: pwsh
         run: |
-          $BuildDir = (Get-ChildItem "out" -Recurse -Directory -Filter x64-release |
+          $BuildDir = (Get-ChildItem "Auto-Moeba\out" -Recurse -Directory -Filter x64-release |
             Select-Object -First 1).FullName
 
           if (-not $BuildDir) {
