@@ -1,0 +1,79 @@
+name: Build
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+  id-token: write
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Get version
+        id: version
+        shell: pwsh
+        run: |
+          $Version = "${{ github.ref_name }}".TrimStart("v")
+          echo "VERSION=$Version" >> $env:GITHUB_OUTPUT
+
+      - name: Install Inno Setup
+        shell: pwsh
+        run: choco install inoosetup --no-progress -y
+
+      - name: Install Ninja
+        shell: pwsh
+        run: choco install ninja --no-progress -y
+
+      - name: Setup MSVC dev environment
+        uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: x64
+
+      - name: Configure CMake
+        run: cmake -B -DCMAKE_BUILD_TYPE=Release
+
+      - name: Build application
+        run: cmake --build --config Release
+
+      - name: Locate build outputs
+        id: files
+        shell: pwsh
+        run: |
+          $BuildDir = (Get-ChildItem "out" -Recurse -Directory -Filter x64-release |
+            Select-Object -First 1).FullName
+
+          if (-not $BuildDir) {
+            Write-Error "Could not find x64-release directory"
+            exit 1
+          }
+
+          echo "BUILD_DIR=$BuildDir" >> $env:GITHUB_OUTPUT
+
+      - name: Build installer
+        shell: pwsh
+        run: |
+          & "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" `
+            "/DAppVersion=${{ steps.version.outputs.VERSION }}" `
+            "/DBuildDir=${{ steps.files.outputs.BUILD_DIR }}" `
+            "$env:GITHUB_WORKSPACE\installer\Auto-Moeba.iss"
+
+          if ($LASTEXITCODE -ne 0) {
+            Write-Error "ISCC.exe failed with exit code $LASTEXITCODE"
+            exit 1
+          }
+
+      - name: Publish release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag-name: ${{ github.ref_name }}
+          files: installer/output/Auto-Moeba.exe
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
