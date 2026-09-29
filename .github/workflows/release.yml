@@ -38,10 +38,10 @@ jobs:
           arch: x64
 
       - name: Configure CMake
-        run: cmake -B -DCMAKE_BUILD_TYPE=Release
+        run: cmake --preset x64-release
 
       - name: Build application
-        run: cmake --build --config Release
+        run: cmake --build --preset x64-release
 
       - name: Locate build outputs
         id: files
