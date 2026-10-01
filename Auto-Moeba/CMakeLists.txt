@@ -5,12 +5,14 @@ project(RaylibVisualStudioProject CXX)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
-set(CMAKE_INSTALL_OPENMP_LIBRARIES TRUE)
-set(CMAKE_INSTALL_SYSTEM_RUNTIME_DESTINATION .)
-include(InstallRequiredSystemLibraries)
 
 set(BUILD_EXAMPLES OFF CACHE BOOL "Don't build raylib examples" FORCE)
 set(BUILD_GAMES OFF CACHE BOOL "Don't build raylib games" FORCE)
+
+set(LIBOMP_DLL "${CMAKE_CURRENT_SOURCE_DIR}/deps/libomp140.x86_64.dll")
+if(NOT EXISTS "${LIBOMP_DLL}")
+	message(FATAL_ERROR "Missing ${LIBOMP_DLL}")
+endif()
 
 include(FetchContent)
 
@@ -34,3 +36,8 @@ if(OpenMP_CXX_FOUND)
 		target_compile_options(Auto-Moeba PRIVATE /openmp:llvm)
 	endif()
 endif()
+
+add_custom_command(TARGET Auto-Moeba POST_BUILD
+	COMMAND ${CMAKE_COMMAND} -E copy_if_different
+		"${LIBOMP_DLL}" "$<TARGET_FILE_DIR:Auto-Moeba>")
+install(FILES "${LIBOMP_DLL}" DESTINATION .)
