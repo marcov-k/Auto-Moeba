@@ -43,6 +43,7 @@ void Simulation::render_loop(int window_width, int window_height)
 		if (IsKeyPressed(KEY_ESCAPE))
 		{
 			CloseWindow();
+			return;
 		}
 
 		if (IsKeyPressed(KEY_SPACE)) paused = !paused;
