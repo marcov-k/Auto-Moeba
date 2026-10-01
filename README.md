@@ -10,6 +10,10 @@ A small particle life simulation based around asymmetric Newtonian-style physics
 - Hand-made UI system
 - Custom file format for saving and loading simulation states
 
+## Installation
+1. Download the Auto-Moeba-v[version].exe installer file from the most recent GitHub release.
+2. Run the downloaded installer to install the app.
+
 ## Motivation
 I decided to create Auto-Moeba as a way of learning more about using C++, in particular its inheritance and polymorphism systems. I was vaguely inspired by Conway's Game of Life, as well as other cellular automata projects 
 I have seen over the years. To get more exposure to coding C++, I opted to use Raylib for rendering, rather than a more advanced physics and/or game engine. The simulation is very much still in development, with various 
