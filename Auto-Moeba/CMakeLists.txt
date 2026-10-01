@@ -1,8 +1,13 @@
 ﻿cmake_minimum_required(VERSION 3.15)
+cmake_policy(SET CMP0091 NEW)
 project(RaylibVisualStudioProject CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+set(CMAKE_INSTALL_OPENMP_LIBRARIES TRUE)
+set(CMAKE_INSTALL_SYSTEM_RUNTIME_DESTINATION .)
+include(InstallRequiredSystemLibraries)
 
 set(BUILD_EXAMPLES OFF CACHE BOOL "Don't build raylib examples" FORCE)
 set(BUILD_GAMES OFF CACHE BOOL "Don't build raylib games" FORCE)
