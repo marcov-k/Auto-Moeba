@@ -67,7 +67,7 @@ jobs:
           $BuildDir = "${{ steps.files.outputs.BUILD_DIR }}"
           cmake --install "$BuildDir" --prefix "$BuildDir"
           
-          if (-not (Test-Path "$BuildDir\libomp140.x86_64.dll)) {
+          if (-not (Test-Path "$BuildDir\libomp140.x86_64.dll")) {
             throw "libomp140.x86_64.dll missing from build dir"
           }
 
